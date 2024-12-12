@@ -1,97 +1,52 @@
 import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
 
-class Datos:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="white")
-        self.label = tk.Label(self.frame, text="Contenido de Datos", font=("Arial", 20))
-        self.label.pack(pady=20)
-
-    def mostrar(self):
-        self.frame.pack(fill=tk.BOTH, expand=True)
-
-    def ocultar(self):
-        self.frame.pack_forget()
-
-
-class BuscarDatos:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="white")
-        self.label = tk.Label(self.frame, text="Contenido de Buscar Datos", font=("Arial", 20))
-        self.label.pack(pady=20)
-
-    def mostrar(self):
-        self.frame.pack(fill=tk.BOTH, expand=True)
-
-    def ocultar(self):
-        self.frame.pack_forget()
-
-
-class Administracion:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="white")
-        self.label = tk.Label(self.frame, text="Contenido de Administración", font=("Arial", 20))
-        self.label.pack(pady=20)
-
-    def mostrar(self):
-        self.frame.pack(fill=tk.BOTH, expand=True)
-
-    def ocultar(self):
-        self.frame.pack_forget()
-
-
-class MinimarketApp:
+class LoginScreen:
     def __init__(self, root):
         self.root = root
-        self.root.title("Minimarket Software")
+        self.root.title("Pantalla de Inicio de Sesión")
+        self.root.geometry("400x300")
 
-        # Configurar la ventana para que tome el tamaño de la pantalla sin ser pantalla completa
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
-        self.root.geometry(f"{screen_width}x{screen_height}")
+        # Etiqueta y ComboBox para seleccionar el tipo de cuenta
+        self.label_role = tk.Label(self.root, text="Seleccione el tipo de cuenta:")
+        self.label_role.pack(pady=10)
 
-        ######### Crear la barra de navegación #############
-        
-        self.nav_bar = tk.Frame(self.root, bg="#d7d7d7")
-        self.nav_bar.place(x=0, y=0, width=screen_width, height=60)
+        self.combo_role = ttk.Combobox(self.root, values=["Usuario", "Administrador"], width=27)
+        self.combo_role.pack(pady=5)
+        self.combo_role.current(0)  # Establecer valor por defecto en "Usuario"
 
-        # Crear los botones de la barra de navegación
-        self.btn_datos = tk.Button(self.nav_bar, text="Datos", width=20, height=2, command=self.mostrar_datos)
-        self.btn_datos.pack(side=tk.LEFT, padx=10)
+        # Etiquetas y campos de entrada para el nombre de usuario y contraseña
+        self.label_user = tk.Label(self.root, text="Usuario:")
+        self.label_user.pack(pady=10)
+        self.entry_user = tk.Entry(self.root, width=30)
+        self.entry_user.pack(pady=5)
 
-        self.btn_buscar_datos = tk.Button(self.nav_bar, text="Buscar Datos", width=20, height=2, command=self.mostrar_buscar_datos)
-        self.btn_buscar_datos.pack(side=tk.LEFT, padx=10)
+        self.label_pass = tk.Label(self.root, text="Contraseña:")
+        self.label_pass.pack(pady=10)
+        self.entry_pass = tk.Entry(self.root, show="*", width=30)
+        self.entry_pass.pack(pady=5)
 
-        self.btn_administracion = tk.Button(self.nav_bar, text="Administración", width=20, height=2, command=self.mostrar_administracion)
-        self.btn_administracion.pack(side=tk.LEFT, padx=10)
+        # Botón de login
+        self.btn_login = tk.Button(self.root, text="Aceptar", command=self.login)
+        self.btn_login.pack(pady=20)
 
-        ######### Crear el área blanca que cambia de acuerdo con el botón #########
-        self.contenido = tk.Frame(self.root, bg="white")
-        self.contenido.place(x=0, y=60, width=screen_width, height=screen_height - 60)
+    def login(self):
+        user = self.entry_user.get()  # Obtener el nombre de usuario
+        password = self.entry_pass.get()  # Obtener la contraseña
+        role = self.combo_role.get()  # Obtener el rol seleccionado
 
-        # Crear instancias de las clases de contenido
-        self.datos = Datos(self.contenido)
-        self.buscar_datos = BuscarDatos(self.contenido)
-        self.administracion = Administracion(self.contenido)
-
-    def mostrar_datos(self):
-        self.ocultar_secciones()
-        self.datos.mostrar()
-
-    def mostrar_buscar_datos(self):
-        self.ocultar_secciones()
-        self.buscar_datos.mostrar()
-
-    def mostrar_administracion(self):
-        self.ocultar_secciones()
-        self.administracion.mostrar()
-
-    def ocultar_secciones(self):
-        self.datos.ocultar()
-        self.buscar_datos.ocultar()
-        self.administracion.ocultar()
+        # Verificación simple de las credenciales (esto puede ser más avanzado con base de datos)
+        if user == "admin" and password == "admin123" and role == "Administrador":
+            messagebox.showinfo("Login", "Acceso como Administrador concedido")
+        elif user == "usuario" and password == "user123" and role == "Usuario":
+            messagebox.showinfo("Login", "Acceso como Usuario concedido")
+        else:
+            messagebox.showerror("Error", "Credenciales incorrectas")
 
 
+# Crear la ventana principal y pasarla a la clase LoginScreen
 if __name__ == "__main__":
     root = tk.Tk()
-    app = MinimarketApp(root)
+    login_screen = LoginScreen(root)
     root.mainloop()
