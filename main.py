@@ -97,13 +97,17 @@ class Login:
         # Botón "Registrar cuenta" más pequeño
         tk.Button(self.master, text="Registrar cuenta", command=self.create_register_window, font=("Arial", 10)).pack(pady=5)
 
+        # Botón "Recuperar cuenta"
+        tk.Button(self.master, text="Recuperar cuenta", command=self.open_recover_window, font=("Arial", 10)).pack(pady=5)
+    
+    
     def login(self):
         """Simula el proceso de login con validación"""
         account = self.account_type.get()
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        # Validar que los campos no estén vacíos
+        # Validar que los campos no estén vacíos}
         if not username or not password:
             messagebox.showerror("Error", "Debe ingresar un nombre de usuario y una contraseña")
             return
@@ -118,6 +122,50 @@ class Login:
 
         # Cerrar la ventana de login después de la acción
         self.master.destroy()  # Cierra la ventana principal (login)
+
+        
+    def open_recover_window(self):
+        """Abre la ventana para recuperar la cuenta"""
+        # Limpiar la ventana actual
+        for widget in self.master.winfo_children():
+            widget.destroy()
+    
+        # Etiqueta que informa al usuario sobre el ID de recuperación
+        tk.Label(self.master, text="Al ingresar se le brindó un ID para poder\n recuperar su contraseña.\n \nIngréselo aquí:", font=("Arial", 12)).pack(pady=20)
+    
+        # Campo para ingresar solo números (ID de recuperación)
+        self.recover_id_entry = tk.Entry(self.master, font=("Arial", 12))
+    
+        # Validar que solo se ingrese un número
+        validate_id = self.master.register(self.validate_numeric_input)
+        
+        self.recover_id_entry.config(validate="key", validatecommand=(validate_id, "%P"))
+        self.recover_id_entry.pack(pady=10)
+    
+        # Botón para aceptar
+        tk.Button(self.master, text="Aceptar", command=self.recover_account, font=("Arial", 12)).pack(pady=10)
+    
+    def validate_numeric_input(self, input_value):
+        """Valida que el valor ingresado sea un número"""
+        if input_value.isdigit() or input_value == "":
+            return True
+        return False
+    
+    def recover_account(self):
+        """Simula la recuperación de la cuenta"""
+        recover_id = self.recover_id_entry.get()
+        
+        if not recover_id:
+            messagebox.showerror("Error", "Debe ingresar el ID de recuperación")
+            return
+    
+        ### Aquí agregarías la lógica para verificar el ID de recuperación en la base de datos ###
+    
+        # Cerrar la ventana de login después de la acción
+        self.master.destroy()  # Cierra la ventana principal (login)
+    
+    
+
 
 # Crear la ventana principal
 root = tk.Tk()
