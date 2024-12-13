@@ -137,7 +137,8 @@ class Login:
             messagebox.showerror("Error", "Debe seleccionar un tipo de cuenta")
         else:
             messagebox.showinfo("Acceso", f"Accediendo como {account} con usuario {username}")
-
+            self.master.destroy()  # Cerrar la ventana principal
+            
 # Crear la ventana principal
 root = tk.Tk()
 app = Login(root)
