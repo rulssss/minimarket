@@ -81,7 +81,7 @@ class Login:
         tk.Label(self.master, text="Seleccione tipo de cuenta:", font=("Arial", 14)).pack(pady=20)
 
         # ComboBox para seleccionar entre "Usuario" o "Administrador"
-        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Arial", 12))
+        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Arial", 12), state="readonly")
         self.account_type.pack(pady=10)
         
         tk.Label(self.master, text="Usuario:", font=("Arial", 12)).pack(pady=5)
@@ -201,7 +201,7 @@ class Login:
             return
 
         # Aquí agregarías la lógica para guardar la nueva contraseña en la base de datos o archivo
-        messagebox.showinfo("Recuperación", "Contraseña recuperada correctamente")
+        messagebox.showinfo("Recuperación", "Contraseña reestablecida correctamente")
 
         # Cerrar la ventana de recuperación de contraseña
         self.master.destroy()  # Cierra la ventana de recuperación
