@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from functions import *
 
 class Login:
     def __init__(self, master):
@@ -112,7 +113,7 @@ class Login:
         self.repeat_password_entry.pack(pady=5)
 
         tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Arial", 12)).pack(pady=10)
-        tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Arial", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
+        tk.Button(self.master, text="<< Volver", command=self.open_login_window, font=("Arial", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def confirm_password(self):
         new_password = self.new_password_entry.get()
@@ -135,7 +136,16 @@ class Login:
             messagebox.showerror("Error", "Debe ingresar un nombre de usuario y una contraseña")
         elif not account:
             messagebox.showerror("Error", "Debe seleccionar un tipo de cuenta")
+        elif existe_usuario(username):
+            messagebox.showerror("Error", "Usuario no encontrado.")
+            
+        elif verificar_contrasenia(password, username, account):
+            messagebox.showerror("Error", "Contraseña incorrecta o tipo de usuario mal seleccionado.")
+
+
         else:
+            ## funcion para enviar el usuario y contrasenia a la base de datos
+            registrar_usuario(account, username, password)
             messagebox.showinfo("Acceso", f"Accediendo como {account} con usuario {username}")
             self.master.destroy()  # Cerrar la ventana principal
             
