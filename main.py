@@ -107,7 +107,7 @@ class Login:
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        # Validar que los campos no estén vacíos}
+        # Validar que los campos no estén vacíos
         if not username or not password:
             messagebox.showerror("Error", "Debe ingresar un nombre de usuario y una contraseña")
             return
@@ -160,12 +160,56 @@ class Login:
             return
     
         ### Aquí agregarías la lógica para verificar el ID de recuperación en la base de datos ###
-    
-        # Cerrar la ventana de login después de la acción
-        self.master.destroy()  # Cierra la ventana principal (login)
-    
-    
 
+        # Abrir la ventana para ingresar la nueva contraseña
+        self.open_reset_password_window()
+
+    def open_reset_password_window(self):
+        """Abre la ventana para reingresar la nueva contraseña"""
+        # Limpiar la ventana actual
+        for widget in self.master.winfo_children():
+            widget.destroy()
+
+        # Etiqueta que informa al usuario que ingrese la nueva contraseña
+        tk.Label(self.master, text="Reingrese su contraseña:", font=("Arial", 12)).pack(pady=20)
+
+        # Campos para ingresar las contraseñas
+        tk.Label(self.master, text="Contraseña nueva:", font=("Arial", 12)).pack(pady=5)
+        self.new_password_entry = tk.Entry(self.master, show="*", font=("Arial", 12))
+        self.new_password_entry.pack(pady=5)
+
+        tk.Label(self.master, text="Repetir contraseña:", font=("Arial", 12)).pack(pady=5)
+        self.repeat_password_entry = tk.Entry(self.master, show="*", font=("Arial", 12))
+        self.repeat_password_entry.pack(pady=5)
+
+        # Botón para confirmar la nueva contraseña
+        tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Arial", 12)).pack(pady=10)
+
+    def confirm_password(self):
+        """Confirma que las contraseñas sean iguales y no vacías"""
+        new_password = self.new_password_entry.get()
+        repeat_password = self.repeat_password_entry.get()
+
+        # Validar que las contraseñas no estén vacías
+        if not new_password or not repeat_password:
+            messagebox.showerror("Error", "Las contraseñas no pueden estar vacías")
+            return
+
+        # Validar que las contraseñas sean iguales
+        if new_password != repeat_password:
+            messagebox.showerror("Error", "Las contraseñas no coinciden")
+            return
+
+        # Aquí agregarías la lógica para guardar la nueva contraseña en la base de datos o archivo
+        messagebox.showinfo("Recuperación", "Contraseña recuperada correctamente")
+
+        # Cerrar la ventana de recuperación de contraseña
+        self.master.destroy()  # Cierra la ventana de recuperación
+
+        # Reabrir la ventana de login
+        self.master = tk.Tk()
+        app = Login(self.master)
+        self.master.mainloop()
 
 # Crear la ventana principal
 root = tk.Tk()
