@@ -102,15 +102,21 @@ class Login:
         return input_value.isdigit() or input_value == ""
 
     def recover_account(self):
+        global recover_id
         recover_id = self.recover_id_entry.get()
+        
         if not recover_id:
             messagebox.showerror("Error", "Debe ingresar el ID de recuperación")
+        elif existencia_de_id(recover_id):
+            messagebox.showerror("Error", "ID Incorrecto")
         else:
             self.open_reset_password_window()
 
     def open_reset_password_window(self):
         for widget in self.master.winfo_children():
             widget.destroy()
+
+        
 
         tk.Label(self.master, text="Reestablecer Contraseña", font=("Arial", 14)).pack(pady=20)
         tk.Label(self.master, text="Contraseña nueva:", font=("Arial", 12)).pack(pady=5)
@@ -133,6 +139,7 @@ class Login:
         elif new_password != repeat_password:
             messagebox.showerror("Error", "Las contraseñas no coinciden")
         else:
+            actualizar_contrasena(new_password, recover_id)
             messagebox.showinfo("Recuperación", "Contraseña reestablecida correctamente")
             self.open_login_window()
 

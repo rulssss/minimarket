@@ -85,6 +85,25 @@ def hay_admin():
     else:
         return True
 
+def actualizar_contrasena(new_password, recover_id):
+    cursor= connection1.cursor()
+    query_data = f"UPDATE contrasenas SET contrasena = '{new_password}' WHERE id_usuario = {recover_id}"
+    cursor.execute(query_data)
+    cursor.close()
+
+
+def existencia_de_id(recover_id):
+    cursor= connection1.cursor()
+    query_data = f"SELECT id_usuario FROM usuarios WHERE id_usuario = '{recover_id}'"
+    cursor.execute(query_data)
+    data = cursor.fetchall()
+    cursor.close()
+
+    if data == []:
+        return True
+    else:
+        return False    
+
     
 
 def existe_usuario(username):
