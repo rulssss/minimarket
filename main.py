@@ -11,17 +11,15 @@ class Login:
         # Centrar la ventana
         self.center_window()
 
-        if self.hay_admin():
+        if hay_admin():
             self.open_login_window()
         else:
             self.create_register_window()
 
-    def hay_admin(self):
-        return True
 
     def center_window(self):
         window_width = 400
-        window_height = 400
+        window_height = 420
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         position_top = int(screen_height / 2 - window_height / 2)
@@ -32,7 +30,11 @@ class Login:
         for widget in self.master.winfo_children():
             widget.destroy()
 
-        tk.Label(self.master, text="Registrar Administrador", font=("Arial", 14)).pack(pady=20)
+        tk.Label(self.master, text="Registrar Cuenta", font=("Arial", 14)).pack(pady=20)
+        tk.Label(self.master, text="Tipo de cuenta:", font=("Arial", 12)).pack(pady=10)
+        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Arial", 12), state="readonly")
+        self.account_type.pack(pady=10)
+
         tk.Label(self.master, text="Usuario:", font=("Arial", 12)).pack(pady=5)
         self.username_entry = tk.Entry(self.master, font=("Arial", 12))
         self.username_entry.pack(pady=5)
@@ -46,12 +48,19 @@ class Login:
         tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Arial", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def register_user(self):
+        account = self.account_type.get()
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        if not username or not password:
-            messagebox.showerror("Error", "Debe ingresar un nombre de usuario y una contraseña")
+        if not username or not password or not account:
+            messagebox.showerror("Error", "Debe ingresar un tipo de usuario, nombre de usuario y contraseña")
+        elif not existe_usuario(username):
+            messagebox.showerror("Error", "Usuario ya registrado.")
+            
+
         else:
+             ## funcion para enviar el usuario y contrasenia a la base de datos
+            registrar_usuario(username, password, account)  
             messagebox.showinfo("Registro", f"Administrador {username} registrado correctamente")
             self.open_login_window()
 
@@ -142,10 +151,7 @@ class Login:
         elif verificar_contrasenia(password, username, account):
             messagebox.showerror("Error", "Contraseña incorrecta o tipo de usuario mal seleccionado.")
 
-
         else:
-            ## funcion para enviar el usuario y contrasenia a la base de datos
-            registrar_usuario(account, username, password)
             messagebox.showinfo("Acceso", f"Accediendo como {account} con usuario {username}")
             self.master.destroy()  # Cerrar la ventana principal
             

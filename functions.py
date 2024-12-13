@@ -50,8 +50,42 @@ def traer_todos_losdatos_proveedores():
     cursor.close()
     return data
 
-def registrar_usuario(account, username, password):
-    pass
+def registrar_usuario(username, password, account):
+
+    if account == "Administrador":
+        account = True
+    else:
+        account = False     #Aacomoda la variable account a un true o fals epara verificar que tipo de cuenta es
+
+    cursor= connection1.cursor()
+    query_data1 = f"INSERT INTO usuarios(nombre, admin) VALUES('{username}', {account})"
+    cursor.execute(query_data1)
+
+    cursor= connection1.cursor()
+    query_data = f"SELECT id_usuario FROM usuarios WHERE nombre = '{username}'"
+    cursor.execute(query_data)
+    data_id = cursor.fetchall()
+
+
+    query_data2 = f"INSERT INTO contrasenas(id_usuario, contrasena) VALUES({data_id[0][0]}, '{password}')"
+    cursor.execute(query_data2)
+
+
+    cursor.close()
+
+def hay_admin():
+    cursor= connection1.cursor()
+    query_data = f"SELECT id_usuario FROM usuarios WHERE admin = True"
+    cursor.execute(query_data)
+    data = cursor.fetchall()
+    cursor.close()
+
+    if data == []: # verifica si hay algun administrador, si no hay devuelve false y abre la ventana de registro
+        return False
+    else:
+        return True
+
+    
 
 def existe_usuario(username):
     cursor= connection1.cursor()
