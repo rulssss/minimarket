@@ -180,6 +180,7 @@ class Datos:
         for widget in self.master.winfo_children():
             widget.destroy()
         tk.Label(self.master, text="Contenido de Datos", bg="white").pack()
+        
 
 class BuscarDatos:
     def __init__(self, master):
@@ -214,7 +215,7 @@ class Minimarket:
 
         ######### Crear el Notebook vertical a la izquierda #########
         self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
-        self.notebook.place(x=0, y=0, width=300, height=screen_height)
+        self.notebook.place(x=0, y=0, width=310, height=screen_height)
 
         # Crear pestañas del Notebook
         self.tab_datos = tk.Frame(self.notebook, bg="#d7d7d7")
@@ -228,20 +229,26 @@ class Minimarket:
         # Vincular el cambio de pestaña a un evento
         self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana)
 
-        ######### Crear el área blanca que cambia de acuerdo con el botón #########
-        self.contenido = tk.Frame(self.master, bg="white", bd=0, highlightthickness=0)
-        self.contenido.place(x=285, y=0, width=screen_width - 200, height=screen_height)
+        ######### Crear el área blanca dinámica justo debajo del Notebook #########
+        self.contenido = tk.Frame(self.tab_datos, bg="white", bd=0, highlightthickness=0)
+        self.contenido.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        self.contenido_bd = tk.Frame(self.tab_buscar_datos, bg="white", bd=0, highlightthickness=0)
+        self.contenido_bd.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        self.contenido_ad = tk.Frame(self.tab_administracion, bg="white", bd=0, highlightthickness=0)
+        self.contenido_ad.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # Crear instancias de las clases de contenido
         self.datos = Datos(self.contenido)
-        self.buscar_datos = BuscarDatos(self.contenido)
-        self.administracion = Administracion(self.contenido)
+        self.buscar_datos = BuscarDatos(self.contenido_bd)
+        self.administracion = Administracion(self.contenido_ad)
 
         # Configurar estilo para eliminar bordes del Notebook
         # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
         style = ttk.Style()
         style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
-        style.configure("CustomNotebook.TNotebook.Tab", font=("Arial", 10), padding=[10, 5])
+        style.configure("CustomNotebook.TNotebook.Tab", font=("Arial", 11), padding=[10, 5])
         style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
 
         # Mostrar contenido inicial
