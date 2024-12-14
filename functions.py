@@ -42,13 +42,6 @@ connection2.autocommit = True
 #################################################
 #################################################
 
-def traer_todos_losdatos_proveedores():
-    cursor= connection1.cursor()
-    query_data = f"SELECT nombre_proveedor, telefono FROM proveedores ORDER BY id_proveedor"
-    cursor.execute(query_data)
-    data = cursor.fetchall()
-    cursor.close()
-    return data
 
 def registrar_usuario(username, password, account):
 
