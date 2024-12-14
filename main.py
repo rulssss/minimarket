@@ -173,94 +173,99 @@ class Login:
 
 
 class Datos:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="white")
-        self.label = tk.Label(self.frame, text="Contenido de Datos", font=("Arial", 20))
-        self.label.pack(pady=20)
+    def __init__(self, master):
+        self.master = master
 
     def mostrar(self):
-        self.frame.pack(fill=tk.BOTH, expand=True)
-
-    def ocultar(self):
-        self.frame.pack_forget()
-
+        for widget in self.master.winfo_children():
+            widget.destroy()
+        tk.Label(self.master, text="Contenido de Datos", bg="white").pack()
 
 class BuscarDatos:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="white")
-        self.label = tk.Label(self.frame, text="Contenido de Buscar Datos", font=("Arial", 20))
-        self.label.pack(pady=20)
+    def __init__(self, master):
+        self.master = master
 
     def mostrar(self):
-        self.frame.pack(fill=tk.BOTH, expand=True)
-
-    def ocultar(self):
-        self.frame.pack_forget()
-
+        for widget in self.master.winfo_children():
+            widget.destroy()
+        tk.Label(self.master, text="Contenido de Buscar Datos", bg="white").pack()
 
 class Administracion:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="white")
-        self.label = tk.Label(self.frame, text="Contenido de Administración", font=("Arial", 20))
-        self.label.pack(pady=20)
+    def __init__(self, master):
+        self.master = master
 
     def mostrar(self):
-        self.frame.pack(fill=tk.BOTH, expand=True)
+        for widget in self.master.winfo_children():
+            widget.destroy()
+        tk.Label(self.master, text="Contenido de Administración", bg="white").pack()
 
-    def ocultar(self):
-        self.frame.pack_forget()
 
-
+## ventana para el minimarket 
 
 class Minimarket:
     def __init__(self, master, username, account_type):
         self.master = master
-        self.master.title("Minimarket Software")
+        self.master.title("rls")
 
         # Configurar la ventana para que tome el tamaño de la pantalla sin ser pantalla completa
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
         self.master.geometry(f"{screen_width}x{screen_height}")
 
-        ######### Crear la barra de navegación #############
-        self.nav_bar = tk.Frame(self.master, bg="#d7d7d7")
-        self.nav_bar.place(x=0, y=0, width=screen_width, height=60)
+        ######### Crear el Notebook vertical a la izquierda #########
+        self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
+        self.notebook.place(x=0, y=0, width=300, height=screen_height)
 
-        # Crear los botones de la barra de navegación
-        self.btn_datos = tk.Button(self.nav_bar, text="Datos", width=20, height=2, command=self.mostrar_datos)
-        self.btn_datos.pack(side=tk.LEFT, padx=10)
+        # Crear pestañas del Notebook
+        self.tab_datos = tk.Frame(self.notebook, bg="#d7d7d7")
+        self.tab_buscar_datos = tk.Frame(self.notebook, bg="#d7d7d7")
+        self.tab_administracion = tk.Frame(self.notebook, bg="#d7d7d7")
 
-        self.btn_buscar_datos = tk.Button(self.nav_bar, text="Buscar Datos", width=20, height=2, command=self.mostrar_buscar_datos)
-        self.btn_buscar_datos.pack(side=tk.LEFT, padx=10)
+        self.notebook.add(self.tab_datos, text="Datos")
+        self.notebook.add(self.tab_buscar_datos, text="Buscar Datos")
+        self.notebook.add(self.tab_administracion, text="Administración")
 
-        self.btn_administracion = tk.Button(self.nav_bar, text="Administración", width=20, height=2, command=self.mostrar_administracion)
-        self.btn_administracion.pack(side=tk.LEFT, padx=10)
+        # Vincular el cambio de pestaña a un evento
+        self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana)
 
         ######### Crear el área blanca que cambia de acuerdo con el botón #########
-        self.contenido = tk.Frame(self.master, bg="white")
-        self.contenido.place(x=0, y=60, width=screen_width, height=screen_height - 60)
+        self.contenido = tk.Frame(self.master, bg="white", bd=0, highlightthickness=0)
+        self.contenido.place(x=285, y=0, width=screen_width - 200, height=screen_height)
 
         # Crear instancias de las clases de contenido
         self.datos = Datos(self.contenido)
         self.buscar_datos = BuscarDatos(self.contenido)
         self.administracion = Administracion(self.contenido)
 
+        # Configurar estilo para eliminar bordes del Notebook
+        # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
+        style = ttk.Style()
+        style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
+        style.configure("CustomNotebook.TNotebook.Tab", font=("Arial", 10), padding=[10, 5])
+        style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
+
+        # Mostrar contenido inicial
+        self.mostrar_datos()
+
+    def cambiar_pestana(self, event):
+        pestaña_actual = self.notebook.index(self.notebook.select())
+        if pestaña_actual == 0:
+            self.mostrar_datos()
+        elif pestaña_actual == 1:
+            self.mostrar_buscar_datos()
+        elif pestaña_actual == 2:
+            self.mostrar_administracion()
+
     def mostrar_datos(self):
-        self.ocultar_secciones()
         self.datos.mostrar()
 
     def mostrar_buscar_datos(self):
-        self.ocultar_secciones()
         self.buscar_datos.mostrar()
 
     def mostrar_administracion(self):
-        self.ocultar_secciones()
         self.administracion.mostrar()
 
-    def ocultar_secciones(self):
-        self.datos.ocultar()
-        self.buscar_datos.ocultar()
-        self.administracion.ocultar()
+
 
             
 # Crear la ventana principal
