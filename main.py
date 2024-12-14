@@ -73,6 +73,7 @@ class Login:
 
         tk.Label(self.master, text="Seleccione tipo de cuenta:", font=("Arial", 14)).pack(pady=20)
         self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Arial", 12), state="readonly")
+        self.account_type.set("Administrador")  # Establecer "Administrador" como valor predeterminado
         self.account_type.pack(pady=10)
 
         tk.Label(self.master, text="Usuario:", font=("Arial", 12)).pack(pady=5)
@@ -83,7 +84,12 @@ class Login:
         self.password_entry = tk.Entry(self.master, show="*", font=("Arial", 12))
         self.password_entry.pack(pady=5)
 
-        tk.Button(self.master, text="Aceptar", command=self.login, font=("Arial", 12)).pack(pady=10)
+         # Crear el botón "Aceptar"
+        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.login, font=("Arial", 12))
+        aceptar_button.pack(pady=10)
+        # Vincular la tecla Enter al comando del botón "Aceptar"
+        self.master.bind("<Return>", lambda event: aceptar_button.invoke())
+
         tk.Button(self.master, text="Registrar cuenta", command=self.create_register_window, font=("Arial", 10)).pack(pady=5)
         tk.Button(self.master, text="Recuperar cuenta", command=self.open_recover_window, font=("Arial", 10)).pack(pady=5)
 
