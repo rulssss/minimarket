@@ -205,6 +205,7 @@ class Datos:
             ("Borrar Proveedor", self.borrar_proveedor),
             ("Agregar Categoría", self.agregar_categoria),
             ("Borrar Categoría", self.borrar_categoria),
+            ("Actualizar Precio", self.actualizar_precio)
         ]
 
         for texto, comando in botones:
@@ -237,8 +238,10 @@ class Datos:
     def borrar_datos(self):
         print("Borrar Datos")
 
-    
-        
+    def actualizar_precio(self):
+        print("actualizar precio")
+
+       
 
 class BuscarDatos:
     def __init__(self, master):
@@ -247,7 +250,27 @@ class BuscarDatos:
     def mostrar(self):
         for widget in self.master.winfo_children():
             widget.destroy()
-        tk.Label(self.master, text="Contenido de Buscar Datos", bg="white").pack()
+        tk.Label(self.master, text="Contenido de Buscar Datos", bg="white", ).pack()
+
+
+        # Botones "Datos por Día" y "Datos por Mes"
+        botones = [
+            ("Datos por Día", self.datos_por_dia),
+            ("Datos por Mes", self.datos_por_mes)
+        ]
+
+        for texto, comando in botones:
+            tk.Button(self.master, text=texto, command=comando, bg="#d7d7d7", fg="black", width=20, font=("Segoe UI", 12, "bold")).pack(pady=8)
+
+    # Métodos de ejemplo para los botones
+    def datos_por_dia(self):
+        print("Datos por Día")
+
+    def datos_por_mes(self):
+        print("Datos por Mes")
+
+
+
 
 class Administracion:
     def __init__(self, master):
@@ -257,7 +280,21 @@ class Administracion:
         for widget in self.master.winfo_children():
             widget.destroy()
         tk.Label(self.master, text="Contenido de Administración", bg="white").pack()
+        # Botones "Facturero" y "Compras"
+        botones = [
+            ("Facturero", self.facturero),
+            ("Compras", self.compras)
+        ]
 
+        for texto, comando in botones:
+            tk.Button(self.master, text=texto, command=comando, bg="#d7d7d7", fg="black", width=20, font=("Segoe UI", 12, "bold")).pack(pady=5)
+
+    # Métodos de ejemplo para los botones
+    def facturero(self):
+        print("Facturero")
+
+    def compras(self):
+        print("Compras")
 
 ## ventana para el minimarket 
 
