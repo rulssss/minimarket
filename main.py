@@ -33,29 +33,29 @@ class Login:
         for widget in self.master.winfo_children():
             widget.destroy()
 
-        tk.Label(self.master, text="Registrar Cuenta", font=("Arial", 14)).pack(pady=20)
-        tk.Label(self.master, text="Tipo de cuenta:", font=("Arial", 12)).pack(pady=10)
-        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Arial", 12), state="readonly")
+        tk.Label(self.master, text="Registrar Cuenta", font=("Segoe UI", 14)).pack(pady=20)
+        tk.Label(self.master, text="Tipo de cuenta:", font=("Segoe UI", 12)).pack(pady=10)
+        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Segoe UI", 12), state="readonly")
         self.account_type.set("Administrador")  # Establecer "Administrador" como valor predeterminado
         self.account_type.pack(pady=10)
 
-        tk.Label(self.master, text="Usuario:", font=("Arial", 12)).pack(pady=5)
-        self.username_entry = tk.Entry(self.master, font=("Arial", 12))
+        tk.Label(self.master, text="Usuario:", font=("Segoe UI", 12)).pack(pady=5)
+        self.username_entry = tk.Entry(self.master, font=("Segoe UI", 12))
         self.username_entry.pack(pady=5)
 
-        tk.Label(self.master, text="Contraseña:", font=("Arial", 12)).pack(pady=5)
-        self.password_entry = tk.Entry(self.master, show="*", font=("Arial", 12))
+        tk.Label(self.master, text="Contraseña:", font=("Segoe UI", 12)).pack(pady=5)
+        self.password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.password_entry.pack(pady=5)
 
 
          # Crear el botón "Aceptar"
-        register_button = tk.Button(self.master, text="Registrar", command=self.login, font=("Arial", 12))
+        register_button = tk.Button(self.master, text="Registrar", command=self.login, font=("Segoe UI", 12))
         register_button.pack(pady=10)
         # Vincular la tecla Enter al comando del botón "Aceptar"
         self.master.bind("<Return>", lambda event: register_button.invoke())
 
 
-        tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Arial", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
+        tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def register_user(self):
         account = self.account_type.get()
@@ -78,41 +78,41 @@ class Login:
         for widget in self.master.winfo_children():
             widget.destroy()
 
-        tk.Label(self.master, text="Seleccione tipo de cuenta:", font=("Arial", 14)).pack(pady=20)
+        tk.Label(self.master, text="Seleccione tipo de cuenta:", font=("Segoe UI", 14)).pack(pady=20)
         self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Arial", 12), state="readonly")
         self.account_type.set("Administrador")  # Establecer "Administrador" como valor predeterminado
         self.account_type.pack(pady=10)
 
-        tk.Label(self.master, text="Usuario:", font=("Arial", 12)).pack(pady=5)
-        self.username_entry = tk.Entry(self.master, font=("Arial", 12))
+        tk.Label(self.master, text="Usuario:", font=("Segoe UI", 12)).pack(pady=5)
+        self.username_entry = tk.Entry(self.master, font=("Segoe UI", 12))
         self.username_entry.pack(pady=5)
 
-        tk.Label(self.master, text="Contraseña:", font=("Arial", 12)).pack(pady=5)
-        self.password_entry = tk.Entry(self.master, show="*", font=("Arial", 12))
+        tk.Label(self.master, text="Contraseña:", font=("Segoe UI", 12)).pack(pady=5)
+        self.password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.password_entry.pack(pady=5)
 
          # Crear el botón "Aceptar"
-        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.login, font=("Arial", 12))
+        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.login, font=("Segoe UI", 12))
         aceptar_button.pack(pady=10)
         # Vincular la tecla Enter al comando del botón "Aceptar"
         self.master.bind("<Return>", lambda event: aceptar_button.invoke())
 
-        tk.Button(self.master, text="Registrar cuenta", command=self.create_register_window, font=("Arial", 10)).pack(pady=5)
-        tk.Button(self.master, text="Recuperar cuenta", command=self.open_recover_window, font=("Arial", 10)).pack(pady=5)
+        tk.Button(self.master, text="Registrar cuenta", command=self.create_register_window, font=("Segoe UI", 10)).pack(pady=5)
+        tk.Button(self.master, text="Recuperar cuenta", command=self.open_recover_window, font=("Segoe UI", 10)).pack(pady=5)
 
     def open_recover_window(self):
         for widget in self.master.winfo_children():
             widget.destroy()
 
-        tk.Label(self.master, text="Recuperar Cuenta", font=("Arial", 14)).pack(pady=20)
-        tk.Label(self.master, text="ID de recuperación:", font=("Arial", 12)).pack(pady=5)
-        self.recover_id_entry = tk.Entry(self.master, font=("Arial", 12))
+        tk.Label(self.master, text="Recuperar Cuenta", font=("Segoe UI", 14)).pack(pady=20)
+        tk.Label(self.master, text="ID de recuperación:", font=("Segoe UI", 12)).pack(pady=5)
+        self.recover_id_entry = tk.Entry(self.master, font=("Segoe UI", 12))
         validate_id = self.master.register(self.validate_numeric_input)
         self.recover_id_entry.config(validate="key", validatecommand=(validate_id, "%P"))
         self.recover_id_entry.pack(pady=10)
 
-        tk.Button(self.master, text="Aceptar", command=self.recover_account, font=("Arial", 12)).pack(pady=10)
-        tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Arial", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
+        tk.Button(self.master, text="Aceptar", command=self.recover_account, font=("Segoe UI", 12)).pack(pady=10)
+        tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def validate_numeric_input(self, input_value):
         return input_value.isdigit() or input_value == ""
@@ -134,17 +134,17 @@ class Login:
 
         
 
-        tk.Label(self.master, text="Reestablecer Contraseña", font=("Arial", 14)).pack(pady=20)
-        tk.Label(self.master, text="Contraseña nueva:", font=("Arial", 12)).pack(pady=5)
-        self.new_password_entry = tk.Entry(self.master, show="*", font=("Arial", 12))
+        tk.Label(self.master, text="Reestablecer Contraseña", font=("Segoe UI", 14)).pack(pady=20)
+        tk.Label(self.master, text="Contraseña nueva:", font=("Segoe UI", 12)).pack(pady=5)
+        self.new_password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.new_password_entry.pack(pady=5)
 
-        tk.Label(self.master, text="Repetir contraseña:", font=("Arial", 12)).pack(pady=5)
-        self.repeat_password_entry = tk.Entry(self.master, show="*", font=("Arial", 12))
+        tk.Label(self.master, text="Repetir contraseña:", font=("Segoe UI", 12)).pack(pady=5)
+        self.repeat_password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.repeat_password_entry.pack(pady=5)
 
-        tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Arial", 12)).pack(pady=10)
-        tk.Button(self.master, text="<< Volver", command=self.open_login_window, font=("Arial", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
+        tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Segoe UI", 12)).pack(pady=10)
+        tk.Button(self.master, text="<< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def confirm_password(self):
         new_password = self.new_password_entry.get()
@@ -195,7 +195,7 @@ class Datos:
             widget.destroy()
 
         # Etiqueta inicial
-        tk.Label(self.master, text="Contenido de Datos", bg="white").pack(pady=10)
+        tk.Label(self.master, text="Contenido de Datos", bg="white", font=("Segoe UI", 10, "bold")).pack(pady=10)
 
         # Crear botones
         botones = [
@@ -209,11 +209,12 @@ class Datos:
         ]
 
         for texto, comando in botones:
-            tk.Button(self.master, text=texto, command=comando, bg="#d7d7d7", fg="black", width=20, font=("Segoe UI", 12, "bold")).pack(pady=8)
-        
-        
+            
+            tk.Button(self.master,text=texto,command=comando,height=2,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
+            
+
         # Botón "Borrar Datos" en la parte inferior
-        boton_borrar_datos = tk.Button(self.master, text="Borrar Datos", command=self.borrar_datos,  bg="red", fg="white", width=15, font=("Segoe UI", 12, "bold"))
+        boton_borrar_datos = tk.Button(self.master, text="Borrar Datos", height=1, command=self.borrar_datos,  bg="red", fg="white", width=15, font=("Segoe UI", 12, "bold"), bd=2)
         boton_borrar_datos.pack(pady=30)
 
     # Métodos de ejemplo para los botones
@@ -250,7 +251,7 @@ class BuscarDatos:
     def mostrar(self):
         for widget in self.master.winfo_children():
             widget.destroy()
-        tk.Label(self.master, text="Contenido de Buscar Datos", bg="white", ).pack()
+        tk.Label(self.master, text="Contenido de Buscar Datos", bg="white",font=("Segoe UI", 10, "bold") ).pack(pady=10)
 
 
         # Botones "Datos por Día" y "Datos por Mes"
@@ -260,7 +261,7 @@ class BuscarDatos:
         ]
 
         for texto, comando in botones:
-            tk.Button(self.master, text=texto, command=comando, bg="#d7d7d7", fg="black", width=20, font=("Segoe UI", 12, "bold")).pack(pady=8)
+            tk.Button(self.master,text=texto,command=comando,height=2,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
     # Métodos de ejemplo para los botones
     def datos_por_dia(self):
@@ -279,7 +280,7 @@ class Administracion:
     def mostrar(self):
         for widget in self.master.winfo_children():
             widget.destroy()
-        tk.Label(self.master, text="Contenido de Administración", bg="white").pack()
+        tk.Label(self.master, text="Contenido de Administración", bg="white", font=("Segoe UI", 10, "bold")).pack(pady=10)
         # Botones "Facturero" y "Compras"
         botones = [
             ("Facturero", self.facturero),
@@ -287,7 +288,7 @@ class Administracion:
         ]
 
         for texto, comando in botones:
-            tk.Button(self.master, text=texto, command=comando, bg="#d7d7d7", fg="black", width=20, font=("Segoe UI", 12, "bold")).pack(pady=5)
+            tk.Button(self.master,text=texto,command=comando,height=2,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
     # Métodos de ejemplo para los botones
     def facturero(self):
