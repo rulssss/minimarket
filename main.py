@@ -190,9 +190,54 @@ class Datos:
         self.master = master
 
     def mostrar(self):
+        # Limpiar el contenedor principal
         for widget in self.master.winfo_children():
             widget.destroy()
-        tk.Label(self.master, text="Contenido de Datos", bg="white").pack()
+
+        # Etiqueta inicial
+        tk.Label(self.master, text="Contenido de Datos", bg="white").pack(pady=10)
+
+        # Crear botones
+        botones = [
+            ("Agregar Producto", self.agregar_producto),
+            ("Borrar Producto", self.borrar_producto),
+            ("Agregar Proveedor", self.agregar_proveedor),
+            ("Borrar Proveedor", self.borrar_proveedor),
+            ("Agregar Categoría", self.agregar_categoria),
+            ("Borrar Categoría", self.borrar_categoria),
+        ]
+
+        for texto, comando in botones:
+            tk.Button(self.master, text=texto, command=comando, bg="#d7d7d7", fg="black", width=20, font=("Segoe UI", 12, "bold")).pack(pady=8)
+        
+        
+        # Botón "Borrar Datos" en la parte inferior
+        boton_borrar_datos = tk.Button(self.master, text="Borrar Datos", command=self.borrar_datos,  bg="red", fg="white", width=15, font=("Segoe UI", 12, "bold"))
+        boton_borrar_datos.pack(pady=30)
+
+    # Métodos de ejemplo para los botones
+    def agregar_producto(self):
+        print("Agregar Producto")
+
+    def borrar_producto(self):
+        print("Borrar Producto")
+
+    def agregar_proveedor(self):
+        print("Agregar Proveedor")
+
+    def borrar_proveedor(self):
+        print("Borrar Proveedor")
+
+    def agregar_categoria(self):
+        print("Agregar Categoría")
+
+    def borrar_categoria(self):
+        print("Borrar Categoría")
+
+    def borrar_datos(self):
+        print("Borrar Datos")
+
+    
         
 
 class BuscarDatos:
