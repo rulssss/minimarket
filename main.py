@@ -201,18 +201,28 @@ class Datos:
         botones = [
             ("Agregar Producto", self.agregar_producto),
             ("Borrar Producto", self.borrar_producto),
+            ("Visualizar Productos", self.visualizar_productos),
             ("Agregar Proveedor", self.agregar_proveedor),
             ("Borrar Proveedor", self.borrar_proveedor),
+            ("Visualizar Proveedores", self.visualizar_proveedores),
             ("Agregar Categoría", self.agregar_categoria),
             ("Borrar Categoría", self.borrar_categoria),
+            ("Visualizar Categorías", self.visualizar_categorias),
             ("Actualizar Precio", self.actualizar_precio)
         ]
 
+        c = 0
         for texto, comando in botones:
-            
-            tk.Button(self.master,text=texto,command=comando,height=2,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
-            
+            c += 1
+    
+            tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
+            if c == 3:
+                c = 0
+                # Agregar una línea sutil estilo "hr"
+                tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x")        
 
+        # Agregar una línea sutil estilo "hr"
+        tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x")
         # Botón "Borrar Datos" en la parte inferior
         boton_borrar_datos = tk.Button(self.master, text="Borrar Datos", height=1, command=self.borrar_datos,  bg="red", fg="white", width=15, font=("Segoe UI", 12, "bold"), bd=2)
         boton_borrar_datos.pack(pady=30)
@@ -224,23 +234,34 @@ class Datos:
     def borrar_producto(self):
         print("Borrar Producto")
 
+    def visualizar_productos(self):
+        pass
+
     def agregar_proveedor(self):
         print("Agregar Proveedor")
 
     def borrar_proveedor(self):
         print("Borrar Proveedor")
 
+    def visualizar_proveedores(self):
+        pass
+
     def agregar_categoria(self):
         print("Agregar Categoría")
 
     def borrar_categoria(self):
         print("Borrar Categoría")
+    
+    def visualizar_categorias(self):
+        pass
+
+    def actualizar_precio(self):
+        print("actualizar precio")
 
     def borrar_datos(self):
         print("Borrar Datos")
 
-    def actualizar_precio(self):
-        print("actualizar precio")
+    
 
        
 
@@ -261,7 +282,7 @@ class BuscarDatos:
         ]
 
         for texto, comando in botones:
-            tk.Button(self.master,text=texto,command=comando,height=2,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
+            tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
     # Métodos de ejemplo para los botones
     def datos_por_dia(self):
@@ -288,7 +309,7 @@ class Administracion:
         ]
 
         for texto, comando in botones:
-            tk.Button(self.master,text=texto,command=comando,height=2,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
+            tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
     # Métodos de ejemplo para los botones
     def facturero(self):
@@ -367,7 +388,6 @@ class Minimarket:
 
     def mostrar_administracion(self):
         self.administracion.mostrar()
-
 
 
             
