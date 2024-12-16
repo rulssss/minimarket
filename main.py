@@ -332,12 +332,12 @@ class Minimarket:
         screen_height = self.master.winfo_screenheight()
         self.master.geometry(f"{screen_width}x{screen_height}")
 
+        ######### Crear el Notebook vertical a la izquierda #########
+        self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
+        self.notebook.place(x=0, y=0, width=310, height=screen_height)
+
         # Mostrar pestañas según el tipo de cuenta
         if account_type:  # Si es True, mostrar todas las pestañas
-
-            ######### Crear el Notebook vertical a la izquierda #########
-            self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
-            self.notebook.place(x=0, y=0, width=310, height=screen_height)
 
             # Crear pestañas del Notebook
             self.tab_datos = tk.Frame(self.notebook, bg="#d7d7d7")
@@ -367,21 +367,8 @@ class Minimarket:
                  # Vincular el cambio de pestaña a un evento
             self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_administrador)
 
-            # Configurar estilo para eliminar bordes del Notebook
-            # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
-            style = ttk.Style()
-            style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
-            style.configure("CustomNotebook.TNotebook.Tab", font=("Segoe UI", 11), padding=[10, 5])
-            style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
-
-
-
 
         else:  # Si es False, mostrar solo Buscar Datos y Administración
-
-            ######### Crear el Notebook vertical a la izquierda #########
-            self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
-            self.notebook.place(x=0, y=0, width=310, height=screen_height)
 
             # Crear pestañas del Notebook
             self.tab_buscar_datos = tk.Frame(self.notebook, bg="#d7d7d7")
@@ -404,12 +391,12 @@ class Minimarket:
             self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_usuario)
 
             
-            # Configurar estilo para eliminar bordes del Notebook
-            # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
-            style = ttk.Style()
-            style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
-            style.configure("CustomNotebook.TNotebook.Tab", font=("Segoe UI", 11), padding=[10, 5])
-            style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
+        # Configurar estilo para eliminar bordes del Notebook
+        # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
+        style = ttk.Style()
+        style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
+        style.configure("CustomNotebook.TNotebook.Tab", font=("Segoe UI", 11), padding=[10, 5])
+        style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
 
 
         # Mostrar mensaje de bienvenida como un título en la parte superior
