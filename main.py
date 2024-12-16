@@ -111,7 +111,12 @@ class Login:
         self.recover_id_entry.config(validate="key", validatecommand=(validate_id, "%P"))
         self.recover_id_entry.pack(pady=10)
 
-        tk.Button(self.master, text="Aceptar", command=self.recover_account, font=("Segoe UI", 12)).pack(pady=10)
+         # Crear el botón "Aceptar"
+        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.recover_account, font=("Segoe UI", 12))
+        aceptar_button.pack(pady=10)
+        # Vincular la tecla Enter al comando del botón "Aceptar"
+        self.master.bind("<Return>", lambda event: aceptar_button.invoke())
+
         tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def validate_numeric_input(self, input_value):
@@ -143,7 +148,12 @@ class Login:
         self.repeat_password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.repeat_password_entry.pack(pady=5)
 
-        tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Segoe UI", 12)).pack(pady=10)
+         # Crear el botón "Aceptar"
+        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Segoe UI", 12))
+        aceptar_button.pack(pady=10)
+        # Vincular la tecla Enter al comando del botón "Aceptar"
+        self.master.bind("<Return>", lambda event: aceptar_button.invoke())
+        
         tk.Button(self.master, text="<< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def confirm_password(self):
@@ -328,9 +338,10 @@ class Minimarket:
         self.master.title("rls")
 
         # Configurar la ventana para que tome el tamaño de la pantalla sin ser pantalla completa
-        screen_width = self.master.winfo_screenwidth()
-        screen_height = self.master.winfo_screenheight()
+        screen_width = 800 # self.master.winfo_screenwidth()
+        screen_height = 600 # self.master.winfo_screenheight()
         self.master.geometry(f"{screen_width}x{screen_height}")
+        
 
         ######### Crear el Notebook vertical a la izquierda #########
         self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
