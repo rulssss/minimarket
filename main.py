@@ -49,7 +49,7 @@ class Login:
 
 
          # Crear el botón "Aceptar"
-        register_button = tk.Button(self.master, text="Registrar", command=self.login, font=("Segoe UI", 12))
+        register_button = tk.Button(self.master, text="Registrar", command=self.register_user, font=("Segoe UI", 12))
         register_button.pack(pady=10)
         # Vincular la tecla Enter al comando del botón "Aceptar"
         self.master.bind("<Return>", lambda event: register_button.invoke())
@@ -79,7 +79,7 @@ class Login:
             widget.destroy()
 
         tk.Label(self.master, text="Seleccione tipo de cuenta:", font=("Segoe UI", 14)).pack(pady=20)
-        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Arial", 12), state="readonly")
+        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Segoe UI", 12), state="readonly")
         self.account_type.set("Administrador")  # Establecer "Administrador" como valor predeterminado
         self.account_type.pack(pady=10)
 
@@ -178,6 +178,10 @@ class Login:
             messagebox.showinfo("Acceso", f"Accediendo como {account} con usuario {username}")
             self.master.destroy()
             minimarket_root = tk.Tk()
+            if account == "Usuario":
+                account = False
+            else:
+                account =  True
             Minimarket(minimarket_root, username, account)
             minimarket_root.mainloop()
 
@@ -292,8 +296,6 @@ class BuscarDatos:
         print("Datos por Mes")
 
 
-
-
 class Administracion:
     def __init__(self, master):
         self.master = master
@@ -330,55 +332,111 @@ class Minimarket:
         screen_height = self.master.winfo_screenheight()
         self.master.geometry(f"{screen_width}x{screen_height}")
 
-        ######### Crear el Notebook vertical a la izquierda #########
-        self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
-        self.notebook.place(x=0, y=0, width=310, height=screen_height)
+        # Mostrar pestañas según el tipo de cuenta
+        if account_type:  # Si es True, mostrar todas las pestañas
 
-        # Crear pestañas del Notebook
-        self.tab_datos = tk.Frame(self.notebook, bg="#d7d7d7")
-        self.tab_buscar_datos = tk.Frame(self.notebook, bg="#d7d7d7")
-        self.tab_administracion = tk.Frame(self.notebook, bg="#d7d7d7")
+            ######### Crear el Notebook vertical a la izquierda #########
+            self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
+            self.notebook.place(x=0, y=0, width=310, height=screen_height)
 
-        self.notebook.add(self.tab_datos, text="Datos")
-        self.notebook.add(self.tab_buscar_datos, text="Buscar Datos")
-        self.notebook.add(self.tab_administracion, text="Administración")
+            # Crear pestañas del Notebook
+            self.tab_datos = tk.Frame(self.notebook, bg="#d7d7d7")
+            self.tab_buscar_datos = tk.Frame(self.notebook, bg="#d7d7d7")
+            self.tab_administracion = tk.Frame(self.notebook, bg="#d7d7d7")
 
-        # Vincular el cambio de pestaña a un evento
-        self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana)
+            self.notebook.add(self.tab_datos, text="Datos")
+            self.notebook.add(self.tab_buscar_datos, text="Buscar Datos")
+            self.notebook.add(self.tab_administracion, text="Administración")
+            
+            ######### Crear el área blanca dinámica justo debajo del Notebook #########
+            self.contenido = tk.Frame(self.tab_datos, bg="white", bd=0, highlightthickness=0)
+            self.contenido.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        ######### Crear el área blanca dinámica justo debajo del Notebook #########
-        self.contenido = tk.Frame(self.tab_datos, bg="white", bd=0, highlightthickness=0)
-        self.contenido.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+            self.contenido_bd = tk.Frame(self.tab_buscar_datos, bg="white", bd=0, highlightthickness=0)
+            self.contenido_bd.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.contenido_bd = tk.Frame(self.tab_buscar_datos, bg="white", bd=0, highlightthickness=0)
-        self.contenido_bd.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+            self.contenido_ad = tk.Frame(self.tab_administracion, bg="white", bd=0, highlightthickness=0)
+            self.contenido_ad.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.contenido_ad = tk.Frame(self.tab_administracion, bg="white", bd=0, highlightthickness=0)
-        self.contenido_ad.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+            # Crear instancias de las clases de contenido
+            self.datos = Datos(self.contenido)
+            self.buscar_datos = BuscarDatos(self.contenido_bd)
+            self.administracion = Administracion(self.contenido_ad)
 
-        # Crear instancias de las clases de contenido
-        self.datos = Datos(self.contenido)
-        self.buscar_datos = BuscarDatos(self.contenido_bd)
-        self.administracion = Administracion(self.contenido_ad)
 
-        # Configurar estilo para eliminar bordes del Notebook
-        # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
-        style = ttk.Style()
-        style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
-        style.configure("CustomNotebook.TNotebook.Tab", font=("Arial", 11), padding=[10, 5])
-        style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
+                 # Vincular el cambio de pestaña a un evento
+            self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_administrador)
 
-        # Mostrar contenido inicial
-        self.mostrar_datos()
+            # Configurar estilo para eliminar bordes del Notebook
+            # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
+            style = ttk.Style()
+            style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
+            style.configure("CustomNotebook.TNotebook.Tab", font=("Segoe UI", 11), padding=[10, 5])
+            style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
 
-    def cambiar_pestana(self, event):
-        pestaña_actual = self.notebook.index(self.notebook.select())
-        if pestaña_actual == 0:
+
+
+
+        else:  # Si es False, mostrar solo Buscar Datos y Administración
+
+            ######### Crear el Notebook vertical a la izquierda #########
+            self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
+            self.notebook.place(x=0, y=0, width=310, height=screen_height)
+
+            # Crear pestañas del Notebook
+            self.tab_buscar_datos = tk.Frame(self.notebook, bg="#d7d7d7")
+            self.tab_administracion = tk.Frame(self.notebook, bg="#d7d7d7")
+
+            self.notebook.add(self.tab_buscar_datos, text="Buscar Datos")
+            self.notebook.add(self.tab_administracion, text="Administración")
+
+                ######### Crear el área blanca dinámica justo debajo del Notebook ########
+            self.contenido_bd = tk.Frame(self.tab_buscar_datos, bg="white", bd=0, highlightthickness=0)
+            self.contenido_bd.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+            self.contenido_ad = tk.Frame(self.tab_administracion, bg="white", bd=0, highlightthickness=0)
+            self.contenido_ad.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+            self.buscar_datos = BuscarDatos(self.contenido_bd)
+            self.administracion = Administracion(self.contenido_ad)
+
+            # Vincular el cambio de pestaña a un evento
+            self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_usuario)
+
+            
+            # Configurar estilo para eliminar bordes del Notebook
+            # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
+            style = ttk.Style()
+            style.configure("CustomNotebook.TNotebook", borderwidth=0, background="white")
+            style.configure("CustomNotebook.TNotebook.Tab", font=("Segoe UI", 11), padding=[10, 5])
+            style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
+
+
+        # Mostrar mensaje de bienvenida como un título en la parte superior
+        self.bienvenida = tk.Label(self.master, text="Bienvenido!", font=("Segoe UI", 50))
+        self.bienvenida.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
+
+        # Mostrar contenido inicial según el tipo de cuenta
+        if account_type:  # Si es True, mostrar la pestaña de Datos
             self.mostrar_datos()
-        elif pestaña_actual == 1:
+        else:  # Si es False, mostrar la pestaña de Buscar Datos por defecto
             self.mostrar_buscar_datos()
-        elif pestaña_actual == 2:
-            self.mostrar_administracion()
+
+    def cambiar_pestana_usuario(self, event):
+                pestaña_actual = self.notebook.index(self.notebook.select())
+                if pestaña_actual == 0:  # Pestaña de Buscar Datos
+                    self.mostrar_buscar_datos()
+                elif pestaña_actual == 1:  # Pestaña de Administración
+                    self.mostrar_administracion()
+
+    def cambiar_pestana_administrador(self, event):
+                pestaña_actual = self.notebook.index(self.notebook.select())
+                if pestaña_actual == 0 and hasattr(self, 'datos'):
+                    self.mostrar_datos()
+                elif pestaña_actual == 0 or pestaña_actual == 1:  # Asegurar que Buscar Datos funciona
+                    self.mostrar_buscar_datos()
+                elif pestaña_actual == 1 or pestaña_actual == 2:  # Asegurar que Administración funciona
+                    self.mostrar_administracion()
 
     def mostrar_datos(self):
         self.datos.mostrar()
