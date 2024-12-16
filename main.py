@@ -148,7 +148,7 @@ class Login:
         self.repeat_password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.repeat_password_entry.pack(pady=5)
 
-         # Crear el botón "Aceptar"
+         # Crear el botón "Aceptar"DASD
         aceptar_button = tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Segoe UI", 12))
         aceptar_button.pack(pady=10)
         # Vincular la tecla Enter al comando del botón "Aceptar"
