@@ -1,199 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from functions import *
+from tkinter import Toplevel, Label, Entry, Button, Frame
 
-## VENTANA DE LOGINS 
-
-
-class Login:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("Login")
-        self.master.geometry("400x300")
-
-        # Centrar la ventana
-        self.center_window()
-
-        if hay_admin():
-            self.open_login_window()
-        else:
-            self.create_register_window()
-
-
-    def center_window(self):
-        window_width = 400
-        window_height = 420
-        screen_width = self.master.winfo_screenwidth()
-        screen_height = self.master.winfo_screenheight()
-        position_top = int(screen_height / 2 - window_height / 2)
-        position_right = int(screen_width / 2 - window_width / 2)
-        self.master.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
-
-    def create_register_window(self):
-        for widget in self.master.winfo_children():
-            widget.destroy()
-
-        tk.Label(self.master, text="Registrar Cuenta", font=("Segoe UI", 14)).pack(pady=20)
-        tk.Label(self.master, text="Tipo de cuenta:", font=("Segoe UI", 12)).pack(pady=10)
-        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Segoe UI", 12), state="readonly")
-        self.account_type.set("Administrador")  # Establecer "Administrador" como valor predeterminado
-        self.account_type.pack(pady=10)
-
-        tk.Label(self.master, text="Usuario:", font=("Segoe UI", 12)).pack(pady=5)
-        self.username_entry = tk.Entry(self.master, font=("Segoe UI", 12))
-        self.username_entry.pack(pady=5)
-
-        tk.Label(self.master, text="Contraseña:", font=("Segoe UI", 12)).pack(pady=5)
-        self.password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
-        self.password_entry.pack(pady=5)
-
-
-         # Crear el botón "Aceptar"
-        register_button = tk.Button(self.master, text="Registrar", command=self.register_user, font=("Segoe UI", 12))
-        register_button.pack(pady=10)
-        # Vincular la tecla Enter al comando del botón "Aceptar"
-        self.master.bind("<Return>", lambda event: register_button.invoke())
-
-
-        tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
-
-    def register_user(self):
-        account = self.account_type.get()
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-
-        if not username or not password or not account:
-            messagebox.showerror("Error", "Debe ingresar un tipo de usuario, nombre de usuario y contraseña")
-        elif not existe_usuario(username):
-            messagebox.showerror("Error", "Usuario ya registrado.")
-            
-
-        else:
-             ## funcion para enviar el usuario y contrasenia a la base de datos
-            registrar_usuario(username, password, account)  
-            messagebox.showinfo("Registro", f"Administrador {username} registrado correctamente")
-            self.open_login_window()
-
-    def open_login_window(self):
-        for widget in self.master.winfo_children():
-            widget.destroy()
-
-        tk.Label(self.master, text="Seleccione tipo de cuenta:", font=("Segoe UI", 14)).pack(pady=20)
-        self.account_type = ttk.Combobox(self.master, values=["Usuario", "Administrador"], font=("Segoe UI", 12), state="readonly")
-        self.account_type.set("Administrador")  # Establecer "Administrador" como valor predeterminado
-        self.account_type.pack(pady=10)
-
-        tk.Label(self.master, text="Usuario:", font=("Segoe UI", 12)).pack(pady=5)
-        self.username_entry = tk.Entry(self.master, font=("Segoe UI", 12))
-        self.username_entry.pack(pady=5)
-
-        tk.Label(self.master, text="Contraseña:", font=("Segoe UI", 12)).pack(pady=5)
-        self.password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
-        self.password_entry.pack(pady=5)
-
-         # Crear el botón "Aceptar"
-        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.login, font=("Segoe UI", 12))
-        aceptar_button.pack(pady=10)
-        # Vincular la tecla Enter al comando del botón "Aceptar"
-        self.master.bind("<Return>", lambda event: aceptar_button.invoke())
-
-        tk.Button(self.master, text="Registrar cuenta", command=self.create_register_window, font=("Segoe UI", 10)).pack(pady=5)
-        tk.Button(self.master, text="Recuperar cuenta", command=self.open_recover_window, font=("Segoe UI", 10)).pack(pady=5)
-
-    def open_recover_window(self):
-        for widget in self.master.winfo_children():
-            widget.destroy()
-
-        tk.Label(self.master, text="Recuperar Cuenta", font=("Segoe UI", 14)).pack(pady=20)
-        tk.Label(self.master, text="ID de recuperación:", font=("Segoe UI", 12)).pack(pady=5)
-        self.recover_id_entry = tk.Entry(self.master, font=("Segoe UI", 12))
-        validate_id = self.master.register(self.validate_numeric_input)
-        self.recover_id_entry.config(validate="key", validatecommand=(validate_id, "%P"))
-        self.recover_id_entry.pack(pady=10)
-
-         # Crear el botón "Aceptar"
-        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.recover_account, font=("Segoe UI", 12))
-        aceptar_button.pack(pady=10)
-        # Vincular la tecla Enter al comando del botón "Aceptar"
-        self.master.bind("<Return>", lambda event: aceptar_button.invoke())
-
-        tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
-
-    def validate_numeric_input(self, input_value):
-        return input_value.isdigit() or input_value == ""
-
-    def recover_account(self):
-        global recover_id
-        recover_id = self.recover_id_entry.get()
-        
-        if not recover_id:
-            messagebox.showerror("Error", "Debe ingresar el ID de recuperación")
-        elif existencia_de_id(recover_id):
-            messagebox.showerror("Error", "ID Incorrecto")
-        else:
-            self.open_reset_password_window()
-
-    def open_reset_password_window(self):
-        for widget in self.master.winfo_children():
-            widget.destroy()
-
-        
-
-        tk.Label(self.master, text="Reestablecer Contraseña", font=("Segoe UI", 14)).pack(pady=20)
-        tk.Label(self.master, text="Contraseña nueva:", font=("Segoe UI", 12)).pack(pady=5)
-        self.new_password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
-        self.new_password_entry.pack(pady=5)
-
-        tk.Label(self.master, text="Repetir contraseña:", font=("Segoe UI", 12)).pack(pady=5)
-        self.repeat_password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
-        self.repeat_password_entry.pack(pady=5)
-
-         # Crear el botón "Aceptar"DASD
-        aceptar_button = tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Segoe UI", 12))
-        aceptar_button.pack(pady=10)
-        # Vincular la tecla Enter al comando del botón "Aceptar"
-        self.master.bind("<Return>", lambda event: aceptar_button.invoke())
-        
-        tk.Button(self.master, text="<< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
-
-    def confirm_password(self):
-        new_password = self.new_password_entry.get()
-        repeat_password = self.repeat_password_entry.get()
-
-        if not new_password or not repeat_password:
-            messagebox.showerror("Error", "Las contraseñas no pueden estar vacías")
-        elif new_password != repeat_password:
-            messagebox.showerror("Error", "Las contraseñas no coinciden")
-        else:
-            actualizar_contrasena(new_password, recover_id)
-            messagebox.showinfo("Recuperación", "Contraseña reestablecida correctamente")
-            self.open_login_window()
-
-    def login(self):
-        account = self.account_type.get()
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-
-        if not username or not password:
-            messagebox.showerror("Error", "Debe ingresar un nombre de usuario y una contraseña")
-        elif not account:
-            messagebox.showerror("Error", "Debe seleccionar un tipo de cuenta")
-        elif existe_usuario(username):
-            messagebox.showerror("Error", "Usuario no encontrado.")
-            
-        elif verificar_contrasenia(password, username, account):
-            messagebox.showerror("Error", "Contraseña incorrecta o tipo de usuario mal seleccionado.")
-
-        else:
-            messagebox.showinfo("Acceso", f"Accediendo como {account} con usuario {username}")
-            self.master.destroy()
-            minimarket_root = tk.Tk()
-            if account == "Usuario":
-                account = False
-            else:
-                account =  True
-            Minimarket(minimarket_root, username, account)
-            minimarket_root.mainloop()
 
 
 ### TODA LA VENTANA DE EL MINIMARKET 
@@ -243,7 +52,66 @@ class Datos:
 
     # Métodos de ejemplo para los botones
     def agregar_producto(self):
-        print("Agregar Producto")
+        # Crear una ventana secundaria
+        ventana = Toplevel()
+        ventana.title("Añadir Producto")
+        ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
+        ventana.resizable(False, False)  # Evita que se redimensione
+        ventana.configure(bg="white")
+
+        # Centrar la ventana en la pantalla
+        ventana.update_idletasks()
+        ancho_ventana = 1200
+        alto_ventana = 300
+        x = (ventana.winfo_screenwidth() // 2) - (ancho_ventana // 2)
+        y = (ventana.winfo_screenheight() // 2) - (alto_ventana // 2)
+        ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{x}+{y}")
+
+        # Crear un frame contenedor central en la ventana secundaria
+        frame = Frame(ventana, bg="white")
+        frame.pack(fill="both", expand=False)
+
+        # Título central
+        Label(frame, text="Ingrese los datos del producto:", bg="white", font=("Segoe UI", 12, "bold")).grid(
+            row=0, column=0, columnspan=5, pady=(10, 20)
+        )
+
+        # Etiquetas e Inputs
+        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, padx=10, pady=5)
+        input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="flat", font=("Segoe UI", 16, "bold"))
+        input_nombre.grid(row=2, column=0, padx=10, pady=5)
+
+        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, padx=10, pady=5)
+        input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="flat", font=("Segoe UI", 16, "bold"))
+        input_precio.grid(row=2, column=1, padx=10, pady=5)
+
+        Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=2, padx=10, pady=5)
+        input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="flat", font=("Segoe UI", 16, "bold"))
+        input_cantidad.grid(row=2, column=2, padx=10, pady=5)
+
+        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=3, padx=10, pady=5)
+        combo_categoria = ttk.Combobox(frame, state="readonly", width=20, font=("Segoe UI", 16, "bold"))
+        combo_categoria["values"] = ["Abarrotes", "Bebidas", "Lácteos", "Otros"]  # Ejemplo de categorías
+        combo_categoria.grid(row=2, column=3, padx=10, pady=5)
+
+        Label(frame, text="Proveedor", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=4, padx=10, pady=5)
+        combo_proveedor = ttk.Combobox(frame, state="readonly", width=20, font=("Segoe UI", 16, "bold"))
+        combo_proveedor["values"] = ["Proveedor 1", "Proveedor 2", "Proveedor 3"]  # Ejemplo de proveedores
+        combo_proveedor.grid(row=2, column=4, padx=10, pady=5)
+
+        # Botones
+        btn_aceptar = Button(frame, text="Aceptar", bg="#e0e0e0", activebackground="#c0c0c0", activeforeground="white", fg="black", font=("Segoe UI", 15, "bold"),height=1, relief="groove", bd=2, width=12)
+        btn_aceptar.grid(row=3, column=2, padx=(0, 150), pady=(30, 10))
+
+        btn_cancelar = Button(frame, text="Cancelar", bg="#e74c3c", fg="white", activebackground="#c0c0c0", activeforeground="white", font=("Segoe UI", 15, "bold"), height=1, relief="groove", bd=2, command=ventana.destroy, width=12)
+        btn_cancelar.grid(row=3, column=2, padx=(150, 0), pady=(30, 10))
+
+        # Configurar peso de filas y columnas para centrar
+        for i in range(5):
+            frame.grid_columnconfigure(i, weight=1)
+        frame.grid_rowconfigure(0, weight=1)
+        
+        
 
     def borrar_producto(self):
         print("Borrar Producto")
@@ -338,9 +206,13 @@ class Minimarket:
         self.master.title("rls")
 
         # Configurar la ventana para que tome el tamaño de la pantalla sin ser pantalla completa
-        screen_width = 800 # self.master.winfo_screenwidth()
-        screen_height = 600 # self.master.winfo_screenheight()
+        screen_width = self.master.winfo_screenwidth() #minimo = 1152 
+        screen_height = self.master.winfo_screenheight() # minimo = 864 
         self.master.geometry(f"{screen_width}x{screen_height}")
+
+            # Mostrar mensaje de bienvenida como un título en la parte superior
+        self.bienvenida = tk.Label(self.master, text="Bienvenido!", font=("Segoe UI", 50))
+        self.bienvenida.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
         
 
         ######### Crear el Notebook vertical a la izquierda #########
@@ -410,10 +282,6 @@ class Minimarket:
         style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
 
 
-        # Mostrar mensaje de bienvenida como un título en la parte superior
-        self.bienvenida = tk.Label(self.master, text="Bienvenido!", font=("Segoe UI", 50))
-        self.bienvenida.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
-
         # Mostrar contenido inicial según el tipo de cuenta
         if account_type:  # Si es True, mostrar la pestaña de Datos
             self.mostrar_datos()
@@ -446,8 +314,7 @@ class Minimarket:
         self.administracion.mostrar()
 
 
-            
 # Crear la ventana principal
 root = tk.Tk()
-app = Login(root)
+app = Minimarket(root, "mariano", True)
 root.mainloop()
