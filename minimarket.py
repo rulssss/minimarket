@@ -51,7 +51,20 @@ class Datos:
         boton_borrar_datos.pack(pady=30)
 
     # Métodos de ejemplo para los botones
+
+    
+    global ventana_anadir_abierta
+    ventana_anadir_abierta = False # controla que la ventana pueda abrirse solo una vez
     def agregar_producto(self):
+
+        global ventana_anadir_abierta    # Usar la variable global
+
+        if ventana_anadir_abierta:
+            return
+
+        ventana_anadir_abierta = True # abre la ventana
+
+
         # Crear una ventana secundaria
         ventana = Toplevel()
         ventana.title("Añadir Producto")
@@ -79,7 +92,7 @@ class Datos:
         # Etiquetas e Inputs
         Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=0, padx=10, pady=5)
         input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
-        input_nombre.grid(row=2, column=0, padx=10, pady=5)
+        input_nombre.grid(row=2, column=0, padx=(30,10), pady=5)
 
         # Función de validación
         def solo_numeros(char):
@@ -105,7 +118,7 @@ class Datos:
 
         Label(frame, text="Proveedor", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=4, padx=10, pady=5)
         entry_busqueda2 = ttk.Entry(frame, font=("Segoe UI", 16))
-        entry_busqueda2.grid(row=2, column=4, padx=10, pady=5)
+        entry_busqueda2.grid(row=2, column=4, padx=(10,30), pady=5)
 
         # Crear el Label de advertencia
         advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
@@ -136,7 +149,10 @@ class Datos:
 
 
         def on_no():
+
+            global ventana_anadir_abierta
             ventana.destroy()
+            ventana_anadir_abierta = False
 
         # Botones
         btn_aceptar = Button(frame, command=on_yes, text="Aceptar", bg="#e0e0e0", activebackground="#c0c0c0", activeforeground="white", fg="black", font=("Segoe UI", 15, "bold"),height=1, relief="groove", bd=2, width=12)
