@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from functions import *
 from tkinter import Toplevel, Label, Entry, Button, Frame
-
+import re
 
 
 ### TODA LA VENTANA DE EL MINIMARKET 
@@ -72,38 +72,77 @@ class Datos:
         frame.pack(fill="both", expand=False)
 
         # Título central
-        Label(frame, text="Ingrese los datos del producto:", bg="white", font=("Segoe UI", 12, "bold")).grid(
-            row=0, column=0, columnspan=5, pady=(10, 20)
+        Label(frame, text="Ingrese los datos del producto:", bg="white", font=("Segoe UI", 16, "bold")).grid(
+            row=0, column=0, columnspan=5, pady=(10, 30)
         )
 
         # Etiquetas e Inputs
-        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, padx=10, pady=5)
-        input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="flat", font=("Segoe UI", 16, "bold"))
+        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=0, padx=10, pady=5)
+        input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
         input_nombre.grid(row=2, column=0, padx=10, pady=5)
 
-        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, padx=10, pady=5)
-        input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="flat", font=("Segoe UI", 16, "bold"))
+        # Función de validación
+        def solo_numeros(char):
+            return char.isdigit()  # Verifica si el carácter ingresado es un número
+        
+        # Registro de la validación
+        validacion = root.register(solo_numeros)          
+
+
+        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=1, padx=10, pady=5)
+        input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(validacion, "%S"))
         input_precio.grid(row=2, column=1, padx=10, pady=5)
 
-        Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=2, padx=10, pady=5)
-        input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="flat", font=("Segoe UI", 16, "bold"))
+        Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=2, padx=10, pady=5)
+        input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(validacion, "%S"))
         input_cantidad.grid(row=2, column=2, padx=10, pady=5)
+        
+        # Crear un campo de texto para buscar productos
+        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=3, padx=10, pady=5)
+        entry_busqueda1 = ttk.Entry(frame, font=("Segoe UI", 16))
+        entry_busqueda1.grid(row=2, column=3, padx=10, pady=5)  # Ajustar la posición
 
-        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=3, padx=10, pady=5)
-        combo_categoria = ttk.Combobox(frame, state="readonly", width=20, font=("Segoe UI", 16, "bold"))
-        combo_categoria["values"] = ["Abarrotes", "Bebidas", "Lácteos", "Otros"]  # Ejemplo de categorías
-        combo_categoria.grid(row=2, column=3, padx=10, pady=5)
 
-        Label(frame, text="Proveedor", bg="white", font=("Segoe UI", 10, "bold")).grid(row=1, column=4, padx=10, pady=5)
-        combo_proveedor = ttk.Combobox(frame, state="readonly", width=20, font=("Segoe UI", 16, "bold"))
-        combo_proveedor["values"] = ["Proveedor 1", "Proveedor 2", "Proveedor 3"]  # Ejemplo de proveedores
-        combo_proveedor.grid(row=2, column=4, padx=10, pady=5)
+        Label(frame, text="Proveedor", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=4, padx=10, pady=5)
+        entry_busqueda2 = ttk.Entry(frame, font=("Segoe UI", 16))
+        entry_busqueda2.grid(row=2, column=4, padx=10, pady=5)
+
+        # Crear el Label de advertencia
+        advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack(pady=5)
+
+        def es_numero_decimal(valor):
+            try:
+                float(valor)  # Intenta convertir a número flotante
+                return True
+            except ValueError:
+                return False
+
+        def on_yes():
+
+            nombre_producto = input_nombre.get()
+            precio_producto = input_precio.get()
+            cantidad_producto = input_cantidad.get()
+            categoria_producto = entry_busqueda1.get()
+            proveedor_producto = entry_busqueda2.get()
+
+            # Verifica si los valores de precio y cantidad son válidos (números enteros o decimales)
+            if not (es_numero_decimal(precio_producto) and es_numero_decimal(cantidad_producto) and bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto))):
+                advertencia_label.config(text="No acepta vacios ni ',.-/()'")
+                return
+
+            on_no()
+
+
+
+        def on_no():
+            ventana.destroy()
 
         # Botones
-        btn_aceptar = Button(frame, text="Aceptar", bg="#e0e0e0", activebackground="#c0c0c0", activeforeground="white", fg="black", font=("Segoe UI", 15, "bold"),height=1, relief="groove", bd=2, width=12)
+        btn_aceptar = Button(frame, command=on_yes, text="Aceptar", bg="#e0e0e0", activebackground="#c0c0c0", activeforeground="white", fg="black", font=("Segoe UI", 15, "bold"),height=1, relief="groove", bd=2, width=12)
         btn_aceptar.grid(row=3, column=2, padx=(0, 150), pady=(30, 10))
 
-        btn_cancelar = Button(frame, text="Cancelar", bg="#e74c3c", fg="white", activebackground="#c0c0c0", activeforeground="white", font=("Segoe UI", 15, "bold"), height=1, relief="groove", bd=2, command=ventana.destroy, width=12)
+        btn_cancelar = Button(frame, text="Cancelar", command=on_no, bg="#e74c3c", fg="white", activebackground="#c0c0c0", activeforeground="white", font=("Segoe UI", 15, "bold"), height=1, relief="groove", bd=2, width=12)
         btn_cancelar.grid(row=3, column=2, padx=(150, 0), pady=(30, 10))
 
         # Configurar peso de filas y columnas para centrar
@@ -287,6 +326,44 @@ class Minimarket:
             self.mostrar_datos()
         else:  # Si es False, mostrar la pestaña de Buscar Datos por defecto
             self.mostrar_buscar_datos()
+
+        def mostrar_id_inicio(username):
+             
+            id_usuario = obtener_id_usuario(username)
+
+            # Crear la ventana del mensaje
+            mensaje = tk.Toplevel(self.master)
+
+            # Obtener las dimensiones de la ventana principal
+            ventana_width = self.master.winfo_width()
+            ventana_height = self.master.winfo_height()
+
+            # Obtener las dimensiones del mensaje
+            mensaje_width = 400
+            mensaje_height = 200  # Aumentar para que se vea el ID correctamente
+
+            # Calcular la posición para centrar el mensaje
+            position_top = self.master.winfo_rooty() + (ventana_height // 2) - (mensaje_height // 2)
+            position_left = self.master.winfo_rootx() + (ventana_width // 2) - (mensaje_width // 2)
+
+            # Hacer la ventana pequeña, sin bordes y transparente
+            mensaje.geometry(f"{mensaje_width}x{mensaje_height}+{position_left}+{position_top}")
+            mensaje.overrideredirect(True)  # Eliminar los bordes de la ventana
+            mensaje.config(bg="black")  # Fondo negro semitransparente
+            mensaje.attributes("-alpha", 0.7)  # Hacerla semi-transparente
+
+            # Etiqueta con el ID
+            label = tk.Label(mensaje, text=id_usuario, fg="white", font=("Segoe UI", 24, "bold"), bg="black")
+            label.pack(expand=True)
+
+            # Llevar la ventana emergente al frente
+            mensaje.lift()
+
+            # Cerrar el mensaje después de 2 segundos
+            mensaje.after(5000, mensaje.destroy)  # 2000 ms = 2 segundos
+
+        mostrar_id_inicio(username)
+
 
     def cambiar_pestana_usuario(self, event):
                 pestaña_actual = self.notebook.index(self.notebook.select())
