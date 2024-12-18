@@ -252,11 +252,15 @@ class Minimarket:
             # Mostrar mensaje de bienvenida como un título en la parte superior
         self.bienvenida = tk.Label(self.master, text="Bienvenido!", font=("Segoe UI", 50))
         self.bienvenida.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
+
+        # Mostrar ID del usuario de forma transparente
+        self.mostrar_id_inicio(username)
         
 
         ######### Crear el Notebook vertical a la izquierda #########
         self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
         self.notebook.place(x=0, y=0, width=310, height=screen_height)
+
 
         # Mostrar pestañas según el tipo de cuenta
         if account_type:  # Si es True, mostrar todas las pestañas
@@ -327,42 +331,27 @@ class Minimarket:
         else:  # Si es False, mostrar la pestaña de Buscar Datos por defecto
             self.mostrar_buscar_datos()
 
-        def mostrar_id_inicio(username):
-             
-            id_usuario = obtener_id_usuario(username)
 
-            # Crear la ventana del mensaje
-            mensaje = tk.Toplevel(self.master)
+    def mostrar_id_inicio(self, username):
+            
+            # Simular la obtención del ID del usuario
+            id_usuario = obtener_id_usuario(username)  # Método que debes implementar
+    
+            # Etiqueta transparente para mostrar el ID
+            self.id_label = tk.Label(
+                self.master,
+                text=f"ID usuario: {id_usuario}",
+                font=("Segoe UI", 30, "bold"),
+                bg="black",
+                fg="white",
+                relief="raised", bd=3, padx=15
+            )
+            self.id_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
 
-            # Obtener las dimensiones de la ventana principal
-            ventana_width = self.master.winfo_width()
-            ventana_height = self.master.winfo_height()
-
-            # Obtener las dimensiones del mensaje
-            mensaje_width = 400
-            mensaje_height = 200  # Aumentar para que se vea el ID correctamente
-
-            # Calcular la posición para centrar el mensaje
-            position_top = self.master.winfo_rooty() + (ventana_height // 2) - (mensaje_height // 2)
-            position_left = self.master.winfo_rootx() + (ventana_width // 2) - (mensaje_width // 2)
-
-            # Hacer la ventana pequeña, sin bordes y transparente
-            mensaje.geometry(f"{mensaje_width}x{mensaje_height}+{position_left}+{position_top}")
-            mensaje.overrideredirect(True)  # Eliminar los bordes de la ventana
-            mensaje.config(bg="black")  # Fondo negro semitransparente
-            mensaje.attributes("-alpha", 0.7)  # Hacerla semi-transparente
-
-            # Etiqueta con el ID
-            label = tk.Label(mensaje, text=id_usuario, fg="white", font=("Segoe UI", 24, "bold"), bg="black")
-            label.pack(expand=True)
-
-            # Llevar la ventana emergente al frente
-            mensaje.lift()
-
-            # Cerrar el mensaje después de 2 segundos
-            mensaje.after(5000, mensaje.destroy)  # 2000 ms = 2 segundos
-
-        mostrar_id_inicio(username)
+            
+    
+            # Configurar opacidad simulada y desaparecer después de 3 segundos
+            self.id_label.after(5000, self.id_label.destroy)
 
 
     def cambiar_pestana_usuario(self, event):
