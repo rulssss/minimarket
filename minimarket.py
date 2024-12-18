@@ -140,10 +140,10 @@ class Datos:
 
         # Botones
         btn_aceptar = Button(frame, command=on_yes, text="Aceptar", bg="#e0e0e0", activebackground="#c0c0c0", activeforeground="white", fg="black", font=("Segoe UI", 15, "bold"),height=1, relief="groove", bd=2, width=12)
-        btn_aceptar.grid(row=3, column=2, padx=(0, 150), pady=(30, 10))
+        btn_aceptar.grid(row=3, column=2, padx=10, pady=(30, 10))
 
-        btn_cancelar = Button(frame, text="Cancelar", command=on_no, bg="#e74c3c", fg="white", activebackground="#c0c0c0", activeforeground="white", font=("Segoe UI", 15, "bold"), height=1, relief="groove", bd=2, width=12)
-        btn_cancelar.grid(row=3, column=2, padx=(150, 0), pady=(30, 10))
+        btn_cancelar = Button(frame, text="Cancelar", command=on_no, bg="#e74c3c", fg="white", activebackground="#c0c0c0", activeforeground="white", font=("Segoe UI", 12, "bold"), relief="groove", bd=2, width=9)
+        btn_cancelar.grid(row=4, column=2, padx=10, pady=(10,20))
 
         # Configurar peso de filas y columnas para centrar
         for i in range(5):
