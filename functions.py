@@ -193,6 +193,10 @@ def traer_id_proveedor(proveedor_producto):
 
 
 def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto):
+    
+    categoria_producto = traer_id_categoria(categoria_producto)
+    proveedor_producto = traer_id_proveedor(proveedor_producto)
+
     cursor= connection2.cursor()
     query_data2 = f"INSERT INTO productos(nombre, precio, stock, id_categoria, id_proveedor) VALUES('{nombre_producto}', {precio_producto}, {cantidad_producto}, {categoria_producto}, {proveedor_producto})"
     cursor.execute(query_data2)

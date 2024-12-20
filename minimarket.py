@@ -78,7 +78,7 @@ class Datos:
         # Centrar la ventana en la pantalla
         ventana.update_idletasks()
         ancho_ventana = 1200
-        alto_ventana = 300
+        alto_ventana = 350
         x = (ventana.winfo_screenwidth() // 2) - (ancho_ventana // 2)
         y = (ventana.winfo_screenheight() // 2) - (alto_ventana // 2)
         ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{x}+{y}")
@@ -162,12 +162,6 @@ class Datos:
         advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
         advertencia_label.pack(pady=5)
 
-        def es_numero_decimal(valor):
-            try:
-                float(valor)  # Intenta convertir a número flotante
-                return True
-            except ValueError:
-                return False
 
         def on_yes():
 
@@ -178,13 +172,10 @@ class Datos:
             proveedor_producto = combobox_busqueda2.get()
 
             # Verifica si los valores de precio y cantidad son válidos (números enteros o decimales)
-            if not (es_numero_decimal(precio_producto) and es_numero_decimal(cantidad_producto) and bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto))):
+            if not nombre_producto or not precio_producto or cantidad_producto and not bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto)):
                 advertencia_label.config(text="No acepta vacios ni ',.-/()'")
                 return
 
-            
-            categoria_producto = traer_id_categoria(categoria_producto)
-            proveedor_producto = traer_id_proveedor(proveedor_producto)
 
             cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto)
             on_no()
@@ -202,7 +193,7 @@ class Datos:
         btn_aceptar.grid(row=3, column=2, padx=10, pady=(30, 10))
 
         btn_cancelar = Button(frame, text="Cancelar", command=on_no, bg="#e74c3c", fg="white", activebackground="#c0c0c0", activeforeground="white", font=("Segoe UI", 12, "bold"), relief="groove", bd=2, width=9)
-        btn_cancelar.grid(row=4, column=2, padx=10, pady=(10,20))
+        btn_cancelar.grid(row=4, column=2, padx=10, pady=10)
 
         # Configurar peso de filas y columnas para centrar
         for i in range(5):
