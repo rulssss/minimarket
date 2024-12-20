@@ -146,10 +146,6 @@ def obtener_id_usuario(usuario):
         return data[0][0]
     else:
         return -1
-    
-
-def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto):
-    pass
 
 
 
@@ -174,3 +170,28 @@ def traer_proveedores():
 
     return data
 
+def traer_id_categoria(categoria_producto):
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT id_categoria FROM categorias WHERE nombre_descrip = '{categoria_producto}'"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+
+    return data[0][0]
+
+
+def traer_id_proveedor(proveedor_producto):
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = '{proveedor_producto}'"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+
+    return data[0][0]
+
+
+def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto):
+    cursor= connection2.cursor()
+    query_data2 = f"INSERT INTO productos(nombre, precio, stock, id_categoria, id_proveedor) VALUES('{nombre_producto}', {precio_producto}, {cantidad_producto}, {categoria_producto}, {proveedor_producto})"
+    cursor.execute(query_data2)
+    cursor.close()

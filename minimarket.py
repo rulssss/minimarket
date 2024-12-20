@@ -72,6 +72,9 @@ class Datos:
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
 
+         # Hacer la ventana modal
+        ventana.grab_set()
+
         # Centrar la ventana en la pantalla
         ventana.update_idletasks()
         ancho_ventana = 1200
@@ -172,6 +175,11 @@ class Datos:
             if not (es_numero_decimal(precio_producto) and es_numero_decimal(cantidad_producto) and bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto))):
                 advertencia_label.config(text="No acepta vacios ni ',.-/()'")
                 return
+
+            
+            categoria_producto = traer_id_categoria(categoria_producto)
+            proveedor_producto = traer_id_proveedor(proveedor_producto)
+
             cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto)
             on_no()
 
@@ -194,6 +202,9 @@ class Datos:
         for i in range(5):
             frame.grid_columnconfigure(i, weight=1)
         frame.grid_rowconfigure(0, weight=1)
+
+        # Vincular el evento de cierre de la ventana a la función on_no
+        ventana.protocol("WM_DELETE_WINDOW", on_no)
         
         
 
