@@ -167,7 +167,7 @@ def traer_proveedores():
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()
-
+    
     return data
 
 def traer_id_categoria(categoria_producto):
@@ -176,8 +176,10 @@ def traer_id_categoria(categoria_producto):
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()
-
+    
     return data[0][0]
+
+
 
 
 def traer_id_proveedor(proveedor_producto):

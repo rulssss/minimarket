@@ -119,7 +119,10 @@ class Datos:
         ##########
 
         # Obtener las categorías
-        categorias = traer_categorias()
+        categorias_tuplas = traer_categorias()
+
+        # Convertir la lista de tuplas en una lista de cadenas de texto
+        categorias = [categoria[0] for categoria in categorias_tuplas]
 
         # Crear el Combobox
         Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=3, padx=10, pady=5)
@@ -137,7 +140,10 @@ class Datos:
         ########
 
         # Obtener las categorías
-        proveedores = traer_proveedores()
+        proveedores_tuplas = traer_proveedores()
+
+        # Convertir la lista de tuplas en una lista de cadenas de texto
+        proveedores = [proveedor[0] for proveedor in proveedores_tuplas]
 
         # Crear el Combobox
         Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=4, padx=10, pady=5)
