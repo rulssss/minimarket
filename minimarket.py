@@ -52,7 +52,7 @@ class Datos:
 
     # Métodos de ejemplo para los botones
 
-    
+
     global ventana_anadir_abierta
     ventana_anadir_abierta = False # controla que la ventana pueda abrirse solo una vez
     def agregar_producto(self):
@@ -100,6 +100,7 @@ class Datos:
         
         # Registro de la validación
         validacion = root.register(solo_numeros)          
+        
 
 
         Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=1, padx=10, pady=5)
@@ -110,15 +111,43 @@ class Datos:
         input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(validacion, "%S"))
         input_cantidad.grid(row=2, column=2, padx=10, pady=5)
         
-        # Crear un campo de texto para buscar productos
+        # Combobox para categorias
+
+        ##########
+
+        # Obtener las categorías
+        categorias = traer_categorias()
+
+        # Crear el Combobox
         Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=3, padx=10, pady=5)
-        entry_busqueda1 = ttk.Entry(frame, font=("Segoe UI", 16))
-        entry_busqueda1.grid(row=2, column=3, padx=10, pady=5)  # Ajustar la posición
+        combobox_busqueda = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda['values'] = categorias
+        combobox_busqueda.grid(row=2, column=3, padx=10, pady=5)
+
+        # Configurar el tamaño de la fuente de las opciones del Combobox
+        combobox_busqueda.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
+
+        ########
+
+        # Combobox para proveedores
+
+        ########
+
+        # Obtener las categorías
+        proveedores = traer_proveedores()
+
+        # Crear el Combobox
+        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=4, padx=10, pady=5)
+        combobox_busqueda = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda['values'] = proveedores
+        combobox_busqueda.grid(row=2, column=4, padx=10, pady=5)
+
+        # Configurar el tamaño de la fuente de las opciones del Combobox
+        combobox_busqueda.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
 
 
-        Label(frame, text="Proveedor", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=4, padx=10, pady=5)
-        entry_busqueda2 = ttk.Entry(frame, font=("Segoe UI", 16))
-        entry_busqueda2.grid(row=2, column=4, padx=(10,30), pady=5)
+
+        ######
 
         # Crear el Label de advertencia
         advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
@@ -136,14 +165,14 @@ class Datos:
             nombre_producto = input_nombre.get()
             precio_producto = input_precio.get()
             cantidad_producto = input_cantidad.get()
-            categoria_producto = entry_busqueda1.get()
+            categoria_producto = combobox_busqueda.get()
             proveedor_producto = entry_busqueda2.get()
 
             # Verifica si los valores de precio y cantidad son válidos (números enteros o decimales)
             if not (es_numero_decimal(precio_producto) and es_numero_decimal(cantidad_producto) and bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto))):
                 advertencia_label.config(text="No acepta vacios ni ',.-/()'")
                 return
-
+            cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto)
             on_no()
 
 
@@ -360,7 +389,7 @@ class Minimarket:
                 font=("Segoe UI", 30, "bold"),
                 bg="black",
                 fg="white",
-                relief="raised", bd=3, padx=15
+                relief="flat", bd=3, padx=15
             )
             self.id_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
 

@@ -43,6 +43,9 @@ connection2.autocommit = True
 #################################################
 
 
+# FUNCIONES PARA CONNECTION1 LOGIN db
+
+
 def registrar_usuario(username, password, account):
 
     if account == "Administrador":
@@ -118,12 +121,13 @@ def verificar_contrasenia(password, username, account):
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()
-    ##################ORDENAR PARA CORREGIR QUE VERIFIQUE SI ES USUARIO O ADMIN 
+
+    ###########ORDENAR PARA CORREGIR QUE VERIFIQUE SI ES USUARIO O ADMIN  ES DECIR, QUE VEA SI ES TRUE O FALSE EN LA TABLA APRA NO TRAER TODOS LOS NOBRES
 
     if account == "Administrador":
         account = True
     else:
-        account = False     #Aacomoda la variable account a un true o fals epara verificar que tipo de cuenta es
+        account = False     #Aacomoda la variable account a un true o false para verificar que tipo de cuenta es
 
     if data != []:
         if data[0][1] != password or data[0][2] != account: ## verifica password igual y si el tipo es igual al seleccionado
@@ -142,3 +146,31 @@ def obtener_id_usuario(usuario):
         return data[0][0]
     else:
         return -1
+    
+
+def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto):
+    pass
+
+
+
+# FUNCIONES PARA CONECTION2 MINIMARKET db
+
+
+def traer_categorias():
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT nombre_descrip FROM categorias ORDER BY nombre_descrip"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+
+    return data
+
+def traer_proveedores():
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT nombre_proveedor FROM proveedores ORDER BY nombre_proveedor"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+
+    return data
+
