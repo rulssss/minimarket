@@ -25,27 +25,34 @@ class Datos:
             ("Agregar Producto", self.agregar_producto),
             ("Borrar Producto", self.borrar_producto),
             ("Visualizar Productos", self.visualizar_productos),
+            ("Actualizar Precio", self.actualizar_precio),
             ("Agregar Proveedor", self.agregar_proveedor),
             ("Borrar Proveedor", self.borrar_proveedor),
             ("Visualizar Proveedores", self.visualizar_proveedores),
             ("Agregar Categoría", self.agregar_categoria),
             ("Borrar Categoría", self.borrar_categoria),
             ("Visualizar Categorías", self.visualizar_categorias),
-            ("Actualizar Precio", self.actualizar_precio)
+            
         ]
 
         c = 0
+        bandera = False
         for texto, comando in botones:
-            c += 1
+            c += 1  
+            
     
             tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
-            if c == 3:
+            if c == 4:
+                c = 0
+                bandera = True
+                # Agregar una línea sutil estilo "hr"
+                tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x") 
+              
+            if bandera == True and c == 3:
                 c = 0
                 # Agregar una línea sutil estilo "hr"
-                tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x")        
-
-        # Agregar una línea sutil estilo "hr"
-        tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x")
+                tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x") 
+       
         # Botón "Borrar Datos" en la parte inferior
         boton_borrar_datos = tk.Button(self.master, text="Borrar Datos", height=1, command=self.borrar_datos,  bg="red", fg="white", width=15, font=("Segoe UI", 12, "bold"), bd=2)
         boton_borrar_datos.pack(pady=30)
@@ -53,16 +60,8 @@ class Datos:
     # Métodos de ejemplo para los botones
 
 
-    global ventana_anadir_abierta
-    ventana_anadir_abierta = False # controla que la ventana pueda abrirse solo una vez
     def agregar_producto(self):
 
-        global ventana_anadir_abierta    # Usar la variable global
-
-        if ventana_anadir_abierta:
-            return
-
-        ventana_anadir_abierta = True # abre la ventana
 
 
         # Crear una ventana secundaria
@@ -183,10 +182,8 @@ class Datos:
 
 
         def on_no():
-
-            global ventana_anadir_abierta
             ventana.destroy()
-            ventana_anadir_abierta = False
+            
 
         # Botones
         btn_aceptar = Button(frame, command=on_yes, text="Aceptar", bg="#e0e0e0", activebackground="#c0c0c0", activeforeground="white", fg="black", font=("Segoe UI", 15, "bold"),height=1, relief="groove", bd=2, width=12)
@@ -204,9 +201,82 @@ class Datos:
         ventana.protocol("WM_DELETE_WINDOW", on_no)
         
         
-
+    
     def borrar_producto(self):
-        print("Borrar Producto")
+        # Crear la ventana
+        ventana = tk.Toplevel()
+        ventana.title("Borrar Producto")
+        ventana.geometry("300x150")  # Tamaño de la ventana
+
+        # Hacer la ventana modal
+        ventana.grab_set()
+
+        # Configurar el color de fondo de la ventana a blanco
+        ventana.configure(bg="white")
+        
+
+        # Obtener el tamaño de la pantalla
+        screen_width = ventana.winfo_screenwidth()
+        screen_height = ventana.winfo_screenheight()
+
+        # Calcular las coordenadas para centrar la ventana
+        window_width = 500
+        window_height = 290
+        x_cordinate = int((screen_width / 2) - (window_width / 2))
+        y_cordinate = int((screen_height / 2) - (window_height / 2))
+
+        # Ubicar la ventana en el centro de la pantalla
+        ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
+
+        # Label para el nombre del producto
+        label_nombre = tk.Label(ventana, text="Nombre de el Producto:", bg="white", font=("Segoe UI", 16))
+        label_nombre.pack(pady=10)
+
+        # Entry para el nombre del producto con fondo #d7d7d7
+        entry_nombre = tk.Entry(ventana, bg="#d7d7d7", font=("Segoe UI", 16), width=25)
+        entry_nombre.pack(pady=5)
+
+            # Crear el Label de advertencia
+        advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack()
+        
+        # Función para confirmar y devolver el valor ingresado
+        def confirmar():
+            nombre_prod = entry_nombre.get()
+
+            if not nombre_prod:  # Verificar si está vacío
+                advertencia_label.config(text="¡Error! No admite nombre vacío.")
+                return  # No hacer nada más si está vacío
+
+            if bool(re.match("^[A-Za-z0-9 ]*$", nombre_prod)):  # Verificar si contiene letras y números
+                v = buscar_producto(nombre_prod) # creada, y sida true lo borra al instante, si hace falta en otra instancia crear otra funcion solo para borrar
+                if v:
+                    
+                    messagebox.showinfo("Borrar Producto", "Producto borrado con éxito.")
+                    ventana.destroy()  # Cerrar la ventana
+                else:
+                    messagebox.showinfo("Borrar Producto", "No se encontró el producto.")
+
+            else:
+                advertencia_label.config(text="Solo admite letras y números.")
+
+        # Botón de borrar
+        boton_confirmar = tk.Button(ventana, text="Borrar", command=confirmar, bg="#ef3232", relief="groove", font=("Segoe UI", 16, "bold"), fg="black", width=12)
+        boton_confirmar.pack(pady=10)
+
+        def cerrar():
+            ventana.destroy()  # Cerrar la ventana
+
+        # Botón para cerrar la ventana
+        boton_cerrar = tk.Button(ventana, text="Cerrar", command=cerrar, bg="lightgrey", font=("Segoe UI", 14, "bold"), fg="black", relief="groove")
+        boton_cerrar.pack(pady=5)
+
+        ventana.protocol("WM_DELETE_WINDOW", cerrar)
+
+        # Iniciar el bucle principal de la ventana
+        ventana.mainloop()
+
+
 
     def visualizar_productos(self):
         pass

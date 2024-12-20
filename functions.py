@@ -208,3 +208,27 @@ def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_pro
         messagebox.showerror("Error", "Esta queriendo ingresar un producto existente")
 
     cursor.close()
+
+def buscar_producto(nombre_prod):
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT EXISTS (SELECT 1 FROM productos WHERE nombre = '{nombre_prod}') AS existe;" # ve si existe y devuelve true o false, ver el fetchone
+    cursor.execute(query_data2)
+    data = cursor.fetchone()[0]
+
+
+
+    if data:
+        cursor= connection2.cursor()
+        query_data2 = f"DELETE FROM productos WHERE nombre = '{nombre_prod}'"
+        cursor.execute(query_data2)
+
+        cursor.close()
+        return True
+        
+    else: 
+        cursor.close()
+        return False
+        
+    
+
+   
