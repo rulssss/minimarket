@@ -1,4 +1,6 @@
 import psycopg2
+from psycopg2 import errors
+from tkinter import messagebox
 
 
 #################################################
@@ -199,5 +201,10 @@ def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_pro
 
     cursor= connection2.cursor()
     query_data2 = f"INSERT INTO productos(nombre, precio, stock, id_categoria, id_proveedor) VALUES('{nombre_producto}', {precio_producto}, {cantidad_producto}, {categoria_producto}, {proveedor_producto})"
-    cursor.execute(query_data2)
+    #verifcacion de que el producto existe
+    try:
+        cursor.execute(query_data2)
+    except errors.UniqueViolation:
+        messagebox.showerror("Error", "Esta queriendo ingresar un producto existente")
+
     cursor.close()
