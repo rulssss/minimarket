@@ -120,12 +120,12 @@ class Datos:
 
         # Crear el Combobox
         Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=3, padx=10, pady=5)
-        combobox_busqueda = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
-        combobox_busqueda['values'] = categorias
-        combobox_busqueda.grid(row=2, column=3, padx=10, pady=5)
+        combobox_busqueda1 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda1['values'] = categorias
+        combobox_busqueda1.grid(row=2, column=3, padx=10, pady=5)
 
         # Configurar el tamaño de la fuente de las opciones del Combobox
-        combobox_busqueda.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
+        combobox_busqueda1.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
 
         ########
 
@@ -138,12 +138,12 @@ class Datos:
 
         # Crear el Combobox
         Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=4, padx=10, pady=5)
-        combobox_busqueda = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
-        combobox_busqueda['values'] = proveedores
-        combobox_busqueda.grid(row=2, column=4, padx=10, pady=5)
+        combobox_busqueda2 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda2['values'] = proveedores
+        combobox_busqueda2.grid(row=2, column=4, padx=10, pady=5)
 
         # Configurar el tamaño de la fuente de las opciones del Combobox
-        combobox_busqueda.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
+        combobox_busqueda2.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
 
 
 
@@ -165,8 +165,8 @@ class Datos:
             nombre_producto = input_nombre.get()
             precio_producto = input_precio.get()
             cantidad_producto = input_cantidad.get()
-            categoria_producto = combobox_busqueda.get()
-            proveedor_producto = entry_busqueda2.get()
+            categoria_producto = combobox_busqueda1.get()
+            proveedor_producto = combobox_busqueda2.get()
 
             # Verifica si los valores de precio y cantidad son válidos (números enteros o decimales)
             if not (es_numero_decimal(precio_producto) and es_numero_decimal(cantidad_producto) and bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto))):
