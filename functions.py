@@ -45,8 +45,10 @@ connection2.autocommit = True
 #################################################
 
 
-# FUNCIONES PARA CONNECTION1 LOGIN db
 
+#####################################
+# FUNCIONES PARA CONNECTION1 LOGIN db
+#####################################
 
 def registrar_usuario(username, password, account):
 
@@ -150,9 +152,9 @@ def obtener_id_usuario(usuario):
         return -1
 
 
-
+#########################################
 # FUNCIONES PARA CONECTION2 MINIMARKET db
-
+#########################################
 
 def traer_categorias():
     cursor= connection2.cursor()
@@ -231,4 +233,14 @@ def buscar_producto(nombre_prod):
         
     
 
-   
+def traer_todos_los_productos():
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT nombre, precio, stock, nombre_descrip, nombre_proveedor FROM productos JOIN categorias ON productos.id_categoria = categorias.id_categoria JOIN proveedores ON productos.id_proveedor = proveedores.id_proveedor ORDER BY productos.nombre"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+    
+    return data
+
+def actualizar_producto(nombre_producto, precio_producto):
+    pass

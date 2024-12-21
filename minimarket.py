@@ -92,7 +92,7 @@ class Datos:
         )
 
         # Etiquetas e Inputs
-        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=0, padx=10, pady=5)
+        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
         input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
         input_nombre.grid(row=2, column=0, padx=(30,10), pady=5)
 
@@ -105,11 +105,11 @@ class Datos:
         
 
 
-        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=1, padx=10, pady=5)
+        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
         input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(validacion, "%S"))
         input_precio.grid(row=2, column=1, padx=10, pady=5)
 
-        Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=2, padx=10, pady=5)
+        Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
         input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(validacion, "%S"))
         input_cantidad.grid(row=2, column=2, padx=10, pady=5)
         
@@ -124,7 +124,7 @@ class Datos:
         categorias = [categoria[0] for categoria in categorias_tuplas]
 
         # Crear el Combobox
-        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=3, padx=10, pady=5)
+        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12)).grid(row=1, column=3, padx=10, pady=5)
         combobox_busqueda1 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
         combobox_busqueda1['values'] = categorias
         combobox_busqueda1.grid(row=2, column=3, padx=10, pady=5)
@@ -145,7 +145,7 @@ class Datos:
         proveedores = [proveedor[0] for proveedor in proveedores_tuplas]
 
         # Crear el Combobox
-        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12, "bold")).grid(row=1, column=4, padx=10, pady=5)
+        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
         combobox_busqueda2 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
         combobox_busqueda2['values'] = proveedores
         combobox_busqueda2.grid(row=2, column=4, padx=10, pady=5)
@@ -277,6 +277,177 @@ class Datos:
         ventana.mainloop()
 
 
+    
+    def actualizar_precio(self):
+
+        def filtrar_productos():
+            value = combobox_nombre.get().lower()
+            if value == '':
+                combobox_nombre['values'] = producto_list
+            else:
+                data = []
+                for item in producto_list:
+                    if value in item.lower():
+                        data.append(item)
+                combobox_nombre['values'] = data
+            combobox_nombre.event_generate('<Down>')
+
+        def on_key_release(event):
+            global filtro_timer
+            if filtro_timer:
+                confirm_window.after_cancel(filtro_timer)  # Cancelar temporizador anterior
+            filtro_timer = confirm_window.after(1200, filtrar_productos)  # Esperar 1500 milisegundos
+
+
+        confirm_window = tk.Toplevel()
+        confirm_window.title("Actualizar Precio")
+        confirm_window.geometry("600x400")
+        confirm_window.config(bg="white")
+
+        # Centrando la ventana  
+        screen_width = confirm_window.winfo_screenwidth()
+        screen_height = confirm_window.winfo_screenheight()
+        window_width = 1300
+        window_height = 320
+        position_x = (screen_width // 2) - (window_width // 2)
+        position_y = (screen_height // 2) - (window_height // 2)
+        confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
+
+        global filtro_timer
+        # Inicializar filtro_timer
+        filtro_timer = None
+
+        # Hacer la ventana modal
+        confirm_window.grab_set()
+
+        label = tk.Label(confirm_window, text="Actualizar el precio de el producto:", font=("Segoe UI", 16, "bold"), bg="white")
+        label.pack(pady=10)
+
+
+        entry_frame = tk.Frame(confirm_window, bg="white")
+        entry_frame.pack(pady=20)
+
+        # Selección de producto con Combobox
+        lbl_nombre = tk.Label(entry_frame, text="Nombre del producto", font=("Segoe UI", 14), bg="white")
+        lbl_nombre.grid(row=0, column=0, padx=10, pady=10)
+
+        productos = traer_todos_los_productos()  # Obtener los productos
+
+        producto_list = [producto[0] for producto in productos]  # Lista con los nombres de los productos
+
+        combobox_nombre = ttk.Combobox(entry_frame, values=producto_list, width=20, font=("Segoe UI", 16), height=5)
+        combobox_nombre.grid(row=1, column=0, padx=10, pady=10)
+        combobox_nombre.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
+
+        # Vincular la función de autocompletar al evento de escritura
+        combobox_nombre.bind('<KeyRelease>', on_key_release)    
+
+        # Campo de precio editable
+        lbl_precio = tk.Label(entry_frame, text="Precio actual a editar", font=("Segoe UI", 14), bg="white")
+        lbl_precio.grid(row=0, column=1, padx=10, pady=10)
+        entry_precio = tk.Entry(entry_frame, width=20, bg="#d7d7d7", font=("Segoe UI", 16))
+        entry_precio.grid(row=1, column=1, padx=10, pady=10)
+
+        # Campo de cantidad no editable
+        lbl_cantidad = tk.Label(entry_frame, text="Stock", font=("Segoe UI", 14), bg="white")
+        lbl_cantidad.grid(row=0, column=2, padx=10, pady=10)
+        entry_cantidad = tk.Entry(entry_frame, width=20, bg="#d7d7d7", font=("Segoe UI", 16), state='readonly')
+        entry_cantidad.grid(row=1, column=2, padx=10, pady=10)
+
+        # Campo de categoria no editable
+        lbl_categoria = tk.Label(entry_frame, text="Categoria", font=("Segoe UI", 14), bg="white")
+        lbl_categoria.grid(row=0, column=3, padx=10, pady=10)
+        entry_categoria= tk.Entry(entry_frame, width=20, bg="#d7d7d7", font=("Segoe UI", 16), state='readonly')
+        entry_categoria.grid(row=1, column=3, padx=10, pady=10)
+
+
+        # Campo de proveedor no editable
+        lbl_proveedor = tk.Label(entry_frame, text="Proveedor", font=("Segoe UI", 14), bg="white")
+        lbl_proveedor.grid(row=0, column=4, padx=10, pady=10)
+        entry_proveedor = tk.Entry(entry_frame, width=20, bg="#d7d7d7", font=("Segoe UI", 16), state='readonly')
+        entry_proveedor.grid(row=1, column=4, padx=10, pady=10)
+
+        # Crear el Label de advertencia
+        advertencia_label = tk.Label(confirm_window, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack()
+
+        # Cargar los datos del producto seleccionado
+        def cargar_datos_producto(event):
+            producto_seleccionado = combobox_nombre.get()
+            for producto in productos:
+                if producto[0] == producto_seleccionado:
+                    entry_precio.delete(0, tk.END)
+                    entry_precio.insert(0, producto[1])  # Precio actual
+
+                    entry_cantidad.config(state='normal')
+                    entry_cantidad.delete(0, tk.END)
+                    entry_cantidad.insert(0, producto[2])  # Cantidad
+                    entry_cantidad.config(state='readonly')
+
+                    entry_categoria.config(state='normal')
+                    entry_categoria.delete(0, tk.END)
+                    entry_categoria.insert(0, producto[3])  # Ctegoria
+                    entry_categoria.config(state='readonly')
+
+                    entry_proveedor.config(state='normal')
+                    entry_proveedor.delete(0, tk.END)
+                    entry_proveedor.insert(0, producto[4])  # Proveedor
+                    entry_proveedor.config(state='readonly')
+
+        combobox_nombre.bind("<<ComboboxSelected>>", cargar_datos_producto)
+
+
+    # Función para actualizar los datos
+        def on_yes():
+            nombre_producto = combobox_nombre.get()
+            precio_producto = entry_precio.get()
+
+            producto_seleccionado = combobox_nombre.get()
+            for producto in productos:
+                if producto[0] == producto_seleccionado:
+                    precio_anterior = producto[1]
+
+
+            def es_numero_decimal(valor):
+                try:
+                    float(valor)  # Intenta convertir a número flotante
+                    return True
+                except ValueError:
+                    return False
+
+      
+
+            if es_numero_decimal(precio_producto):
+                if (float(precio_anterior) == float(precio_producto)):
+                    advertencia_label.config(text="Actualice el precio porfavor")
+
+                else:
+                    actualizar_producto(nombre_producto, precio_producto)
+                    
+                    on_no()
+                return
+
+            else:
+                advertencia_label.config(text="Debe ingresar solo números")
+                return
+
+        def on_no():
+            confirm_window.destroy()  # Cerrar la ventana
+          
+
+        button_frame = tk.Frame(confirm_window, bg="white")
+        button_frame.pack(pady=20)
+
+        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_yes, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12, "bold"))
+        btn_yes.pack(side=tk.LEFT, padx=15)
+
+        btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12, "bold"))
+        btn_no.pack(side=tk.LEFT, padx=15)
+
+        confirm_window.protocol("WM_DELETE_WINDOW", on_no)
+        confirm_window.mainloop()
+
+        
 
     def visualizar_productos(self):
         pass
@@ -298,9 +469,6 @@ class Datos:
     
     def visualizar_categorias(self):
         pass
-
-    def actualizar_precio(self):
-        print("actualizar precio")
 
     def borrar_datos(self):
         print("Borrar Datos")
