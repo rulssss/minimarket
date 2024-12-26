@@ -540,19 +540,18 @@ class Minimarket:
         screen_width = self.master.winfo_screenwidth() #minimo = 1152 
         screen_height = self.master.winfo_screenheight() # minimo = 864 
         self.master.geometry(f"{screen_width}x{screen_height}")
+        self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
 
-            # Mostrar mensaje de bienvenida como un título en la parte superior
+        # Mostrar mensaje de bienvenida como un título en la parte superior
         self.bienvenida = tk.Label(self.master, text="Bienvenido!", font=("Segoe UI", 50))
         self.bienvenida.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
 
         # Mostrar ID del usuario de forma transparente
         self.mostrar_id_inicio(username)
         
-
         ######### Crear el Notebook vertical a la izquierda #########
         self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
         self.notebook.place(x=0, y=0, width=310, height=screen_height)
-
 
         # Mostrar pestañas según el tipo de cuenta
         if account_type:  # Si es True, mostrar todas las pestañas
@@ -581,10 +580,8 @@ class Minimarket:
             self.buscar_datos = BuscarDatos(self.contenido_bd)
             self.administracion = Administracion(self.contenido_ad)
 
-
-                 # Vincular el cambio de pestaña a un evento
+            # Vincular el cambio de pestaña a un evento
             self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_administrador)
-
 
         else:  # Si es False, mostrar solo Buscar Datos y Administración
 
@@ -595,7 +592,7 @@ class Minimarket:
             self.notebook.add(self.tab_buscar_datos, text="Buscar Datos")
             self.notebook.add(self.tab_administracion, text="Administración")
 
-                ######### Crear el área blanca dinámica justo debajo del Notebook ########
+            ######### Crear el área blanca dinámica justo debajo del Notebook ########
             self.contenido_bd = tk.Frame(self.tab_buscar_datos, bg="white", bd=0, highlightthickness=0)
             self.contenido_bd.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
@@ -608,7 +605,6 @@ class Minimarket:
             # Vincular el cambio de pestaña a un evento
             self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_usuario)
 
-            
         # Configurar estilo para eliminar bordes del Notebook
         # Configurar estilo para aumentar tamaño de fuente y cambiar colores de las pestañas
         style = ttk.Style()
@@ -616,60 +612,24 @@ class Minimarket:
         style.configure("CustomNotebook.TNotebook.Tab", font=("Segoe UI", 11), padding=[10, 5])
         style.map("CustomNotebook.TNotebook.Tab", background=[("selected", "#d1e0e0")], foreground=[("selected", "#000000")])
 
-
         # Mostrar contenido inicial según el tipo de cuenta
         if account_type:  # Si es True, mostrar la pestaña de Datos
             self.mostrar_datos()
         else:  # Si es False, mostrar la pestaña de Buscar Datos por defecto
             self.mostrar_buscar_datos()
 
+        # Vincular el evento de cambio de tamaño de la ventana
+        self.master.bind("<Configure>", self.ajustar_tamano)
 
-    def mostrar_id_inicio(self, username):
-            
-            # Simular la obtención del ID del usuario
-            id_usuario = obtener_id_usuario(username)  # Método que debes implementar
-    
-            # Etiqueta transparente para mostrar el ID
-            self.id_label = tk.Label(
-                self.master,
-                text=f"ID usuario: {id_usuario}",
-                font=("Segoe UI", 30, "bold"),
-                bg="black",
-                fg="white",
-                relief="flat", bd=3, padx=15
-            )
-            self.id_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
-
-            
-    
-            # Configurar opacidad simulada y desaparecer después de 3 segundos
-            self.id_label.after(5000, self.id_label.destroy)
-
-
-    def cambiar_pestana_usuario(self, event):
-                pestaña_actual = self.notebook.index(self.notebook.select())
-                if pestaña_actual == 0:  # Pestaña de Buscar Datos
-                    self.mostrar_buscar_datos()
-                elif pestaña_actual == 1:  # Pestaña de Administración
-                    self.mostrar_administracion()
-
-    def cambiar_pestana_administrador(self, event):
-                pestaña_actual = self.notebook.index(self.notebook.select())
-                if pestaña_actual == 0 and hasattr(self, 'datos'):
-                    self.mostrar_datos()
-                elif pestaña_actual == 0 or pestaña_actual == 1:  # Asegurar que Buscar Datos funciona
-                    self.mostrar_buscar_datos()
-                elif pestaña_actual == 1 or pestaña_actual == 2:  # Asegurar que Administración funciona
-                    self.mostrar_administracion()
-
-    def mostrar_datos(self):
-        self.datos.mostrar()
+    def ajustar_tamano(self, event):
+        # Ajustar el tamaño del notebook y el frame derecho
+        self.notebook.place(x=0, y=0, width=310, height=self.master.winfo_height())
+        if hasattr(self, 'frame_derecho'):
+            self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
 
     def mostrar_arbol_productos(self):
         # Limpiar el área derecha si ya hay contenido
-        for widget in self.master.pack_slaves():
-            if isinstance(widget, tk.Frame) and widget.winfo_x() > 310:
-                widget.destroy()
+        self.ocultar_arbol_productos()
 
         # Estilo personalizado para agrandar la fuente de la tabla y aumentar la altura de las filas
         style = ttk.Style()
@@ -678,15 +638,15 @@ class Minimarket:
         style.configure("Rojo.TLabel", foreground="red")
 
         # Frame derecho para mostrar la tabla
-        frame_derecho = tk.Frame(self.master, padx=10, pady=10)
-        frame_derecho.place(x=320, y=0, width=self.master.winfo_width() - 320, height=self.master.winfo_height())
+        self.frame_derecho = tk.Frame(self.master, padx=10, pady=10)
+        self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
 
         # Título para la tabla
-        label_tabla = tk.Label(frame_derecho, text="Productos", font=("Courier New", 24, "bold"), fg="black", relief="flat")
+        label_tabla = tk.Label(self.frame_derecho, text="Productos", font=("Courier New", 24, "bold"), fg="black", relief="flat")
         label_tabla.pack(pady=20)
 
         # Tabla (Treeview) para mostrar los productos
-        tree = ttk.Treeview(frame_derecho, columns=("nombre", "cantidad", "precio", "categoria", "proveedor"), show="headings", height=10)
+        tree = ttk.Treeview(self.frame_derecho, columns=("nombre", "cantidad", "precio", "categoria", "proveedor"), show="headings", height=10)
 
         # Definir las columnas con doble clic
         tree.heading("nombre", text="Nombre")
@@ -705,11 +665,53 @@ class Minimarket:
         # Empaquetar la tabla
         tree.pack(fill=tk.BOTH, expand=True)
 
+    def ocultar_arbol_productos(self):
+        if hasattr(self, 'frame_derecho'):
+            self.frame_derecho.destroy()
+
+    def mostrar_id_inicio(self, username):
+        # Simular la obtención del ID del usuario
+        id_usuario = obtener_id_usuario(username)  # Método que debes implementar
+
+        # Etiqueta transparente para mostrar el ID
+        self.id_label = tk.Label(
+            self.master,
+            text=f"ID usuario: {id_usuario}",
+            font=("Segoe UI", 30, "bold"),
+            bg="black",
+            fg="white",
+            relief="flat", bd=3, padx=15
+        )
+        self.id_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
+
+        # Configurar opacidad simulada y desaparecer después de 3 segundos
+        self.id_label.after(5000, self.id_label.destroy)
+
+    def cambiar_pestana_usuario(self, event):
+        pestaña_actual = self.notebook.index(self.notebook.select())
+        if pestaña_actual == 0:  # Pestaña de Buscar Datos
+            self.mostrar_buscar_datos()
+        elif pestaña_actual == 1:  # Pestaña de Administración
+            self.mostrar_administracion()
+
+    def cambiar_pestana_administrador(self, event):
+        pestaña_actual = self.notebook.index(self.notebook.select())
+        if pestaña_actual == 0 and hasattr(self, 'datos'):
+            self.mostrar_datos()
+        elif pestaña_actual == 0 or pestaña_actual == 1:  # Asegurar que Buscar Datos funciona
+            self.mostrar_buscar_datos()
+        elif pestaña_actual == 1 or pestaña_actual == 2:  # Asegurar que Administración funciona
+            self.mostrar_administracion()
+
+    def mostrar_datos(self):
+        self.datos.mostrar()
+
     def mostrar_buscar_datos(self):
         self.buscar_datos.mostrar()
 
     def mostrar_administracion(self):
         self.administracion.mostrar()
+
 
 
 
