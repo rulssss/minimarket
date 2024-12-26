@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from functions import *
-from tkinter import Toplevel, Label, Entry, Button, Frame
+from tkinter import Toplevel, Label, Entry, Button, Frame, font
 import re
 
 
@@ -9,8 +9,9 @@ import re
 
 
 class Datos:
-    def __init__(self, master):
+    def __init__(self, master, minimarket):
         self.master = master
+        self.minimarket = minimarket
 
     def mostrar(self):
         # Limpiar el contenedor principal
@@ -201,7 +202,6 @@ class Datos:
         ventana.protocol("WM_DELETE_WINDOW", on_no)
         
         
-    
     def borrar_producto(self):
         # Crear la ventana
         ventana = tk.Toplevel()
@@ -275,9 +275,6 @@ class Datos:
 
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
-
-        
-
 
     
     def actualizar_precio(self):
@@ -451,10 +448,10 @@ class Datos:
         confirm_window.protocol("WM_DELETE_WINDOW", on_no)
         confirm_window.mainloop()
 
-        
 
     def visualizar_productos(self):
-        pass
+       self.minimarket.mostrar_arbol_productos()
+
 
     def agregar_proveedor(self):
         print("Agregar Proveedor")
@@ -580,7 +577,7 @@ class Minimarket:
             self.contenido_ad.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
             # Crear instancias de las clases de contenido
-            self.datos = Datos(self.contenido)
+            self.datos = Datos(self.contenido, self)
             self.buscar_datos = BuscarDatos(self.contenido_bd)
             self.administracion = Administracion(self.contenido_ad)
 
@@ -668,11 +665,53 @@ class Minimarket:
     def mostrar_datos(self):
         self.datos.mostrar()
 
+    def mostrar_arbol_productos(self):
+        # Limpiar el área derecha si ya hay contenido
+        for widget in self.master.pack_slaves():
+            if isinstance(widget, tk.Frame) and widget.winfo_x() > 310:
+                widget.destroy()
+
+        # Estilo personalizado para agrandar la fuente de la tabla y aumentar la altura de las filas
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=("Segoe UI", 16, "bold"))  # Agranda la fuente de los encabezados
+        style.configure("Treeview", font=("Segoe UI", 14), rowheight=30)   # Agranda la fuente de las filas y ajusta la altura
+        style.configure("Rojo.TLabel", foreground="red")
+
+        # Frame derecho para mostrar la tabla
+        frame_derecho = tk.Frame(self.master, padx=10, pady=10)
+        frame_derecho.place(x=320, y=0, width=self.master.winfo_width() - 320, height=self.master.winfo_height())
+
+        # Título para la tabla
+        label_tabla = tk.Label(frame_derecho, text="Productos", font=("Courier New", 24, "bold"), fg="black", relief="flat")
+        label_tabla.pack(pady=20)
+
+        # Tabla (Treeview) para mostrar los productos
+        tree = ttk.Treeview(frame_derecho, columns=("nombre", "cantidad", "precio", "categoria", "proveedor"), show="headings", height=10)
+
+        # Definir las columnas con doble clic
+        tree.heading("nombre", text="Nombre")
+        tree.heading("cantidad", text="Cantidad")
+        tree.heading("precio", text="Precio")
+        tree.heading("categoria", text="Categoria")
+        tree.heading("proveedor", text="Proveedor")
+
+        # Definir el ancho de las columnas
+        tree.column("nombre", width=200)
+        tree.column("cantidad", width=100, anchor="center")
+        tree.column("precio", width=100, anchor="center")
+        tree.column("categoria", width=150, anchor="center")
+        tree.column("proveedor", width=150, anchor="center")
+
+        # Empaquetar la tabla
+        tree.pack(fill=tk.BOTH, expand=True)
+
     def mostrar_buscar_datos(self):
         self.buscar_datos.mostrar()
 
     def mostrar_administracion(self):
         self.administracion.mostrar()
+
+
 
 
 # Crear la ventana principal
