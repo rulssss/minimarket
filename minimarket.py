@@ -627,6 +627,8 @@ class Minimarket:
         if hasattr(self, 'frame_derecho'):
             self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
 
+
+
     def mostrar_arbol_productos(self):
         # Limpiar el área derecha si ya hay contenido
         self.ocultar_arbol_productos()
@@ -642,7 +644,7 @@ class Minimarket:
         self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
 
         # Título para la tabla
-        label_tabla = tk.Label(self.frame_derecho, text="Productos", font=("Courier New", 24, "bold"), fg="black", relief="flat")
+        label_tabla = tk.Label(self.frame_derecho, text="Productos", font=("Segoe UI", 24, "bold"), fg="black", relief="flat")
         label_tabla.pack(pady=20)
 
         # Tabla (Treeview) para mostrar los productos
@@ -664,10 +666,84 @@ class Minimarket:
 
         # Empaquetar la tabla
         tree.pack(fill=tk.BOTH, expand=True)
+        
+
+        def mostrar_productos():
+    
+
+            all_data = [('jabon',600.00, 38, 'otros', 'Lucas'),
+                          ('lays', 3000.00, 28, 'snack', 'pedro'), 
+                          ('leche ', 400.00, 40, 'lacteos', 'Mariano'),
+                            ('manaos', 800.00, 30, 'gaseosas', 'Oscar'),
+                              ('pan', 300.00, 301, 'lacteos', 'Lucas'),
+                                ('pepsi',1000.00, 45, 'gaseosas', 'Mariano'),
+                                  ('salchichas', 600.00, 30, 'otros', 'Lucas')]
+            return all_data
+
+
+        def actualizar_filtro(event=None):
+            all_data2 = [('jabon',600.00, 38, 'otros', 'Lucas'),
+                        ('lays', 3000.00, 28, 'snack', 'pedro'), 
+                        ('leche ', 400.00, 40, 'lacteos', 'Mariano'),
+                            ('manaos', 800.00, 30, 'gaseosas', 'Oscar'),
+                            ('pan', 300.00, 301, 'lacteos', 'Lucas'),
+                                ('pepsi',1000.00, 45, 'gaseosas', 'Mariano'),
+                                ('salchichas', 600.00, 30, 'otros', 'Lucas')]
+                # Obtener el texto ingresado en el Entry
+            texto_busqueda = mostrar_productos.entry_busqueda.get().lower()
+            # Limpiar la tabla para mostrar los nuevos resultados
+            for item in tree.get_children():
+                tree.delete(item)
+            # Filtrar productos que contengan el texto ingresado
+            if texto_busqueda == "":
+                productos_a_mostrar = all_data2  # Mostrar todos los productos si no se ha ingresado texto
+            else:
+                productos_a_mostrar = [p for p in all_data2 if texto_busqueda in p[0].lower()]
+            # Insertar los productos filtrados en la tabla
+            if productos_a_mostrar:
+                # Aplicar estilo a las filas con el tag "rojo"
+                tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
+                for i in productos_a_mostrar:
+                    # Determina el color según el valor de i[2]
+                    tag = ("rojo",) if i[2] < 5 else ()
+                    # Insertar una fila vacía para crear espacio
+                    tree.insert("", "end", values=("", "", "", "", ""))
+                    tree.insert("", "end", values=(f"\t{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
+            else:
+                tree.insert("", "end", values=("No se encontraron productos", "", "", "", ""))
+
+        def mostrar_todos_los_productos(s = mostrar_productos()): # cambiar por funcion que traiga todos los datos
+            # Limpiar la tabla para mostrar los productos
+            for item in tree.get_children():
+                tree.delete(item)
+            # Configurar el tag para texto en rojo
+            tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
+            # Insertar todos los productos en la tabla
+            for i in s:
+                tree.insert("", "end", values=("", "", "", "", ""))
+                # Verificar si el valor en la posición 2 es menor a -5
+                # Determina el color según el valor de i[2]
+                tag = ("rojo",) if i[2] < 5 else ()
+                # Insertar el producto con el tag "rojo"
+                tree.insert("", "end", values=(f"                  \t{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
+            
+
+        
+
+        # Crear un campo de texto para buscar productos
+        mostrar_productos.entry_busqueda = ttk.Entry(self.master, font=("Segoe UI", 14))
+        mostrar_productos.entry_busqueda.place(x=415, y=50)  # Ajustar la posición
+        mostrar_productos.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)  # Detectar cada tecla que el usuario presiona
+         # Mostrar todos los productos inmediatamente cuando se abre el Entry
+        mostrar_todos_los_productos()
+
+        
 
     def ocultar_arbol_productos(self):
         if hasattr(self, 'frame_derecho'):
             self.frame_derecho.destroy()
+    
+
 
     def mostrar_id_inicio(self, username):
         # Simular la obtención del ID del usuario
