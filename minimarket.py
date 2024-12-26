@@ -24,8 +24,8 @@ class Datos:
         botones = [
             ("Agregar Producto", self.agregar_producto),
             ("Borrar Producto", self.borrar_producto),
-            ("Visualizar Productos", self.visualizar_productos),
             ("Actualizar Precio", self.actualizar_precio),
+            ("Visualizar Productos", self.visualizar_productos),
             ("Agregar Proveedor", self.agregar_proveedor),
             ("Borrar Proveedor", self.borrar_proveedor),
             ("Visualizar Proveedores", self.visualizar_proveedores),
@@ -276,6 +276,8 @@ class Datos:
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
 
+        
+
 
     
     def actualizar_precio(self):
@@ -326,6 +328,8 @@ class Datos:
 
         entry_frame = tk.Frame(confirm_window, bg="white")
         entry_frame.pack(pady=20)
+
+
 
         # Selección de producto con Combobox
         lbl_nombre = tk.Label(entry_frame, text="Nombre del producto", font=("Segoe UI", 14), bg="white")

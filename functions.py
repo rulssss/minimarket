@@ -243,4 +243,10 @@ def traer_todos_los_productos():
     return data
 
 def actualizar_producto(nombre_producto, precio_producto):
-    pass
+    
+    cursor= connection2.cursor()
+    query_data2 = f"UPDATE productos SET precio = {precio_producto} WHERE nombre = '{nombre_producto}'"
+    cursor.execute(query_data2)
+    cursor.close()
+    
+    
