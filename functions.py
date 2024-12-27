@@ -94,6 +94,7 @@ def actualizar_contrasena(new_password, recover_id):
 
 def existencia_de_id(recover_id):
     cursor= connection1.cursor()
+    # 
     query_data = f"SELECT id_usuario FROM usuarios WHERE id_usuario = '{recover_id}'"
     cursor.execute(query_data)
     data = cursor.fetchall()
@@ -213,7 +214,7 @@ def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_pro
 
 def buscar_producto(nombre_prod):
     cursor= connection2.cursor()
-    query_data2 = f"SELECT EXISTS (SELECT 1 FROM productos WHERE nombre = '{nombre_prod}') AS existe;" # ve si existe y devuelve true o false, ver el fetchone
+    query_data2 = f"SELECT EXISTS (SELECT 1 FROM productos WHERE nombre = '{nombre_prod}') AS existe" # ve si existe y devuelve true o false, ver el fetchone
     cursor.execute(query_data2)
     data = cursor.fetchone()[0]
 
@@ -239,8 +240,9 @@ def traer_todos_los_productos():
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()
-    
     return data
+
+
 
 def actualizar_producto(nombre_producto, precio_producto):
     

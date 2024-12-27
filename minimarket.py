@@ -542,11 +542,8 @@ class Minimarket:
         self.master.geometry(f"{screen_width}x{screen_height}")
         self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
 
-        # Mostrar mensaje de bienvenida como un título en la parte superior
-        self.bienvenida = tk.Label(self.master, text="Bienvenido!", font=("Segoe UI", 50))
-        self.bienvenida.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
 
-        # Mostrar ID del usuario de forma transparente
+        # Mostrar ID del usuario de forma transparente y bienvenida
         self.mostrar_id_inicio(username)
         
         ######### Crear el Notebook vertical a la izquierda #########
@@ -627,7 +624,7 @@ class Minimarket:
         if hasattr(self, 'frame_derecho'):
             self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
 
-
+    
 
     def mostrar_arbol_productos(self):
         # Limpiar el área derecha si ya hay contenido
@@ -651,44 +648,142 @@ class Minimarket:
         tree = ttk.Treeview(self.frame_derecho, columns=("nombre", "cantidad", "precio", "categoria", "proveedor"), show="headings", height=10)
 
         # Definir las columnas con doble clic
-        tree.heading("nombre", text="Nombre")
-        tree.heading("cantidad", text="Cantidad")
-        tree.heading("precio", text="Precio")
-        tree.heading("categoria", text="Categoria")
-        tree.heading("proveedor", text="Proveedor")
+        tree.heading("nombre", text="Nombre", command=lambda: contador_clic("nombre"))
+        tree.heading("cantidad", text="Cantidad", command=lambda: contador_clic("cantidad"))
+        tree.heading("precio", text="Precio", command=lambda: contador_clic("precio"))
+        tree.heading("categoria", text="Categoria", command=lambda: contador_clic("categoria"))
+        tree.heading("proveedor", text="Proveedor", command=lambda: contador_clic("proveedor"))
 
         # Definir el ancho de las columnas
-        tree.column("nombre", width=200)
+        tree.column("nombre", width=100, anchor="center")
         tree.column("cantidad", width=100, anchor="center")
         tree.column("precio", width=100, anchor="center")
-        tree.column("categoria", width=150, anchor="center")
-        tree.column("proveedor", width=150, anchor="center")
+        tree.column("categoria", width=100, anchor="center")
+        tree.column("proveedor", width=100, anchor="center")
 
         # Empaquetar la tabla
         tree.pack(fill=tk.BOTH, expand=True)
+
+        # funciones para copiar columna:
+
+        # Inicializar un diccionario para contar los clics en cada columna
+        click_counter = {"nombre": 0, "cantidad": 0, "precio": 0, "categoria": 0, "proveedor": 0}
+
+        # Función para contar clics y copiar la columna si hay dos clics consecutivos
+        def contador_clic(columna):
+            # Incrementar el contador para la columna seleccionada
+            click_counter[columna] += 1
+
+            # Si se hace clic dos veces, copiar la columna y resetear el contador
+            if click_counter[columna] == 2:
+                copiar_columna(columna)
+                click_counter[columna] = 0
+            else:
+                # Resetear los contadores de las demás columnas
+                for col in click_counter:
+                    if col != columna:
+                        click_counter[col] = 0
+
+
+        # Función para copiar la columna seleccionada al portapapeles
+        def copiar_columna(columna):
+            # Obtener los índices de las filas y el índice de la columna
+            valores_columna = []
+            columna_index = tree["columns"].index(columna)
+
+            # Extraer todos los valores de la columna seleccionada
+            for item in tree.get_children():
+                valor = tree.item(item)['values'][columna_index]
+                valores_columna.append(str(valor))
+
+            # Unir los valores con saltos de línea y copiarlos al portapapeles
+            self.master.clipboard_clear()  # Limpiar el portapapeles
+            self.master.clipboard_append("\n".join(valores_columna))  # Copiar al portapapeles
+            self.master.update()  # Actualizar la ventana para asegurar que el portapapeles se copie
+
+            # Mostrar mensaje emergente
+            mostrar_mensaje_copiado()
+
+        # Variable para realizar seguimiento de los clics
+        global primer_click
+        primer_click = None
+
+        # Función para copiar una fila completa al portapapeles
+        def copiar_fila(event):
+            global primer_click
+
+            # Identificar la fila sobre la que se ha hecho clic
+            item = tree.identify_row(event.y)
+
+            # Si no se ha hecho clic sobre ninguna fila (fuera del área de filas)
+            if not item:
+                return
+
+            # Si ya se ha hecho un primer clic en esta fila
+            if primer_click == item:
+                # Obtener los valores de la fila
+                valores_fila = tree.item(item)['values']
+
+                # Unir los valores con tabuladores o saltos de línea, y copiarlos al portapapeles
+                fila_copiada = "\t".join(str(valor) for valor in valores_fila)  # Usa tabuladores para separar los valores
+                self.master.clipboard_clear()  # Limpiar el portapapeles
+                self.master.clipboard_append(fila_copiada)  # Copiar al portapapeles
+                self.master.update()  # Actualizar la ventana para asegurar que el portapapeles se copie
+
+                # Mostrar mensaje emergente
+                mostrar_mensaje_copiado()
+
+                # Reiniciar el contador de clics
+                primer_click = None
+            else:
+                # Si es el primer clic en la fila, guardamos esa fila
+                primer_click = item
+
+        # Función para mostrar el mensaje "Copiado al portapapeles"
+        def mostrar_mensaje_copiado():
+            # Crear la ventana del mensaje
+            mensaje = tk.Toplevel(self.master)
+            mensaje.title("Mensaje Copiado")
+
+            # Obtener las dimensiones de la ventana principal
+            ventana_width = self.master.winfo_width()
+            ventana_height = self.master.winfo_height()
+
+            # Obtener las dimensiones del mensaje
+            mensaje_width = 300
+            mensaje_height = 50
+
+            # Calcular la posición para centrar el mensaje
+            position_top = self.master.winfo_rooty() + (ventana_height // 2) - (mensaje_height // 2)
+            position_left = self.master.winfo_rootx() + (ventana_width // 2) - (mensaje_width // 2)
+
+            # Hacer la ventana pequeña, sin bordes y transparente
+            mensaje.geometry(f"{mensaje_width}x{mensaje_height}+{position_left}+{position_top}")
+            mensaje.overrideredirect(True)  # Eliminar los bordes de la ventana
+            mensaje.config(bg="black")  # Fondo negro semitransparente
+            mensaje.attributes("-alpha", 0.7)  # Hacerla semi-transparente
+
+            # Etiqueta con el mensaje
+            label = tk.Label(mensaje, text="Copiado al portapapeles", fg="white", font=("Arial", 16, "bold"), bg="black")
+            label.pack(expand=True)
+
+            # Cerrar el mensaje después de 2 segundos
+            mensaje.after(2000, mensaje.destroy)  # 2000 ms = 2 segundos
+
+        # Asociar el evento de clic en la fila
+        tree.bind("<ButtonRelease-1>", copiar_fila)
+
         
 
         def mostrar_productos():
     
 
-            all_data = [('jabon',600.00, 38, 'otros', 'Lucas'),
-                          ('lays', 3000.00, 28, 'snack', 'pedro'), 
-                          ('leche ', 400.00, 40, 'lacteos', 'Mariano'),
-                            ('manaos', 800.00, 30, 'gaseosas', 'Oscar'),
-                              ('pan', 300.00, 301, 'lacteos', 'Lucas'),
-                                ('pepsi',1000.00, 45, 'gaseosas', 'Mariano'),
-                                  ('salchichas', 600.00, 30, 'otros', 'Lucas')]
+            all_data = traer_todos_los_productos()
             return all_data
 
 
         def actualizar_filtro(event=None):
-            all_data2 = [('jabon',600.00, 38, 'otros', 'Lucas'),
-                        ('lays', 3000.00, 28, 'snack', 'pedro'), 
-                        ('leche ', 400.00, 40, 'lacteos', 'Mariano'),
-                            ('manaos', 800.00, 30, 'gaseosas', 'Oscar'),
-                            ('pan', 300.00, 301, 'lacteos', 'Lucas'),
-                                ('pepsi',1000.00, 45, 'gaseosas', 'Mariano'),
-                                ('salchichas', 600.00, 30, 'otros', 'Lucas')]
+            all_data2 = traer_todos_los_productos()
                 # Obtener el texto ingresado en el Entry
             texto_busqueda = mostrar_productos.entry_busqueda.get().lower()
             # Limpiar la tabla para mostrar los nuevos resultados
@@ -708,7 +803,7 @@ class Minimarket:
                     tag = ("rojo",) if i[2] < 5 else ()
                     # Insertar una fila vacía para crear espacio
                     tree.insert("", "end", values=("", "", "", "", ""))
-                    tree.insert("", "end", values=(f"\t{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
+                    tree.insert("", "end", values=(f"{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
             else:
                 tree.insert("", "end", values=("No se encontraron productos", "", "", "", ""))
 
@@ -725,7 +820,7 @@ class Minimarket:
                 # Determina el color según el valor de i[2]
                 tag = ("rojo",) if i[2] < 5 else ()
                 # Insertar el producto con el tag "rojo"
-                tree.insert("", "end", values=(f"                  \t{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
+                tree.insert("", "end", values=(f"{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
             
 
         
@@ -749,6 +844,10 @@ class Minimarket:
         # Simular la obtención del ID del usuario
         id_usuario = obtener_id_usuario(username)  # Método que debes implementar
 
+         # Mostrar mensaje de bienvenida como un título en la parte superior
+        self.bienvenida = tk.Label(self.master, text="Bienvenido!", font=("Segoe UI", 50))
+        self.bienvenida.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
+
         # Etiqueta transparente para mostrar el ID
         self.id_label = tk.Label(
             self.master,
@@ -760,7 +859,9 @@ class Minimarket:
         )
         self.id_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
 
+
         # Configurar opacidad simulada y desaparecer después de 3 segundos
+        self.bienvenida.after(10000, self.bienvenida.destroy)
         self.id_label.after(5000, self.id_label.destroy)
 
     def cambiar_pestana_usuario(self, event):
