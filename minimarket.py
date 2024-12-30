@@ -212,7 +212,7 @@ class Datos:
         ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
 
         # Label para el nombre del producto
-        label_nombre = tk.Label(ventana, text="Nombre de el Producto:", bg="white", font=("Segoe UI", 16))
+        label_nombre = tk.Label(ventana, text="Nombre del Producto:", bg="white", font=("Segoe UI", 16))
         label_nombre.pack(pady=10)
 
         # Entry para el nombre del producto con fondo #d7d7d7
@@ -228,7 +228,7 @@ class Datos:
             nombre_prod = entry_nombre.get()
 
             if not nombre_prod:  # Verificar si está vacío
-                advertencia_label.config(text="¡Error! No admite nombre vacío.")
+                advertencia_label.config(text="No admite nombre vacío")
                 return  # No hacer nada más si está vacío
 
             if bool(re.match("^[A-Za-z0-9 ]*$", nombre_prod)):  # Verificar si contiene letras y números
@@ -432,10 +432,191 @@ class Datos:
 
 
     def agregar_proveedor(self):
-        print("Agregar Proveedor")
+        
+        # Crear una ventana secundaria
+        ventana = Toplevel()
+        ventana.title("Añadir Producto")
+        ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
+        ventana.resizable(False, False)  # Evita que se redimensione
+        ventana.configure(bg="white")
+
+        # Hacer la ventana modal
+        ventana.grab_set()
+
+        # Centrar la ventana en la pantalla
+        ventana.update_idletasks()
+        screen_width = ventana.winfo_screenwidth()
+
+        # Ajustar el ancho de la ventana según el ancho de la pantalla
+        if screen_width < 1100:
+            ancho_ventana = 700
+        else:
+            ancho_ventana = 800
+
+        alto_ventana = 320
+        x = (ventana.winfo_screenwidth() // 2) - (ancho_ventana // 2)
+        y = (ventana.winfo_screenheight() // 2) - (alto_ventana // 2)
+        ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{x}+{y}")
+
+        # Crear un frame contenedor central en la ventana secundaria
+        frame = Frame(ventana, bg="white")
+        frame.pack(fill="both", expand=False)
+
+        # Título central
+        Label(frame, text="Ingrese los datos del proveedor:", bg="white", font=("Segoe UI", 16, "bold")).grid(
+            row=0, column=0, columnspan=5, pady=(10, 30)
+        )
+
+        # Etiquetas e Inputs
+        Label(frame, text="Nombre del proveedor", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
+        input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        input_nombre.grid(row=2, column=0, padx=(30,10), pady=5)
+
+
+        Label(frame, text="Número de telefono", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
+        input_telefono = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(    "%S"))
+        input_telefono.grid(row=2, column=1, padx=10, pady=5)
+
+        Label(frame, text="mail (opcional)", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
+        input_mail = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(    "%S"))
+        input_mail.grid(row=2, column=2, padx=10, pady=5)
+
+
+        # Crear el Label de advertencia
+        advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack(pady=5)
+
+        # Crear un frame para los botones
+        button_frame = tk.Frame(ventana, bg="white")
+        button_frame.pack(pady=(0, 30))
+
+        def on_yes():
+            nombre_proveedor = input_nombre.get()
+            num_telefono = input_telefono.get()
+            mail = input_mail.get()
+
+            # Verifica si los valores de precio y cantidad son válidos (números enteros o decimales)
+            if not bool(re.match("^[A-Za-z0-9 ]*$", nombre_proveedor)):
+                advertencia_label.config(text="No acepta ',.-/()'")
+                return
+            if not bool(re.match("^[0-9]*$", num_telefono)):
+                advertencia_label.config(text="Solo acepta números")
+                return
+            if  not nombre_proveedor or not num_telefono:
+                advertencia_label.config(text="No acepta vacios")
+                return
+            
+            
+
+            if cargar_proveedor(nombre_proveedor, num_telefono, mail):
+                messagebox.showinfo("Proveedor", "Proveedor cargado con éxito")
+
+            else: 
+                messagebox.showerror("Error", "Esta queriendo ingresar un campo ya existente")
+                return
+
+            
+            on_no()
+
+        def on_no():
+            ventana.destroy()
+
+        # Botones
+        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_yes, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12,    "bold"))
+        btn_yes.pack(side=tk.LEFT, padx=15)
+
+        btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12,     "bold"))
+        btn_no.pack(side=tk.LEFT, padx=15)
+
+        # Configurar peso de filas y columnas para centrar
+        for i in range(4):
+            frame.grid_columnconfigure(i, weight=2)
+        frame.grid_rowconfigure(0, weight=1)
+
+        # Vincular el evento de cierre de la ventana a la función on_no
+        ventana.protocol("WM_DELETE_WINDOW", on_no)
 
     def borrar_proveedor(self):
-        print("Borrar Proveedor")
+        # Crear la ventana
+        ventana = tk.Toplevel()
+        ventana.title("Borrar Producto")
+        ventana.geometry("300x150")  # Tamaño de la ventana
+        ventana.resizable(False, False)  # Evita que se redimensione
+
+        # Hacer la ventana modal
+        ventana.grab_set()
+
+        # Configurar el color de fondo de la ventana a blanco
+        ventana.configure(bg="white")
+        
+
+        # Obtener el tamaño de la pantalla
+        screen_width = ventana.winfo_screenwidth()
+        screen_height = ventana.winfo_screenheight()
+
+        # Calcular las coordenadas para centrar la ventana
+
+        if screen_width < 1100:
+
+            window_width = 400
+            window_height = 270
+        else:
+            window_width = 500
+            window_height = 290
+
+        x_cordinate = int((screen_width / 2) - (window_width / 2))
+        y_cordinate = int((screen_height / 2) - (window_height / 2))
+
+        # Ubicar la ventana en el centro de la pantalla
+        ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
+
+        # Label para el nombre del producto
+        label_nombre = tk.Label(ventana, text="Nombre del Proveedor:", bg="white", font=("Segoe UI", 16))
+        label_nombre.pack(pady=10)
+
+        # Entry para el nombre del prodveedor con fondo #d7d7d7
+        entry_nombre = tk.Entry(ventana, bg="#d7d7d7", font=("Segoe UI", 16), width=25)
+        entry_nombre.pack(pady=5)
+
+            # Crear el Label de advertencia
+        advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack()
+        
+        # Función para confirmar y devolver el valor ingresado
+        def confirmar():
+            nombre_prov = entry_nombre.get()
+
+            if not nombre_prov:  # Verificar si está vacío
+                advertencia_label.config(text="No admite nombre vacío")
+                return  # No hacer nada más si está vacío
+
+            if bool(re.match("^[A-Za-z0-9 ]*$", nombre_prov)):  # Verificar si contiene letras y números
+                v = buscar_proveedor(nombre_prov) # creada, y sida true lo borra al instante, si hace falta en otra instancia crear otra funcion solo para borrar
+                if v:
+                    
+                    messagebox.showinfo("Borrar Proveedor", "Proveedor borrado con éxito.")
+                    ventana.destroy()  # Cerrar la ventana
+                else:
+                    messagebox.showinfo("Borrar Proveedor", "No se encontró el proveedor.")
+
+            else:
+                advertencia_label.config(text="Solo admite letras y números.")
+
+        # Botón de borrar
+        boton_confirmar = tk.Button(ventana, text="Borrar", command=confirmar, bg="#ef3232", relief="groove", font=("Segoe UI", 16, "bold"), fg="black", width=12)
+        boton_confirmar.pack(pady=10)
+
+        def cerrar():
+            ventana.destroy()  # Cerrar la ventana
+
+        # Botón para cerrar la ventana
+        boton_cerrar = tk.Button(ventana, text="Cerrar", command=cerrar, bg="lightgrey", font=("Segoe UI", 14, "bold"), fg="black", relief="groove")
+        boton_cerrar.pack(pady=5)
+
+        ventana.protocol("WM_DELETE_WINDOW", cerrar)
+
+        # Iniciar el bucle principal de la ventana
+        ventana.mainloop()
 
     def visualizar_proveedores(self):
         pass
@@ -513,8 +694,8 @@ class Minimarket:
         self.master.title("rls")
 
         # Configurar la ventana para que tome el tamaño de la pantalla sin ser pantalla completa
-        screen_width = 1024 #self.master.winfo_screenwidth() #minimo = 1152 
-        screen_height = 768#self.master.winfo_screenheight() # minimo = 864 
+        screen_width = self.master.winfo_screenwidth() #minimo = 1152  # 1024 
+        screen_height = self.master.winfo_screenheight() # minimo = 864   # 768
         self.master.geometry(f"{screen_width}x{screen_height}")
         self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
 

@@ -217,9 +217,7 @@ def buscar_producto(nombre_prod):
     query_data2 = f"SELECT EXISTS (SELECT 1 FROM productos WHERE nombre = '{nombre_prod}') AS existe" # ve si existe y devuelve true o false, ver el fetchone
     cursor.execute(query_data2)
     data = cursor.fetchone()[0]
-
-
-
+    
     if data:
         cursor= connection2.cursor()
         query_data2 = f"DELETE FROM productos WHERE nombre = '{nombre_prod}'"
@@ -252,3 +250,33 @@ def actualizar_producto(nombre_producto, precio_producto):
     cursor.close()
     
     
+
+def cargar_proveedor(nombre_producto, num_telefono, mail):
+    cursor= connection2.cursor()
+    query_data2 = f"INSERT INTO proveedores(nombre_proveedor, telefono, mail) VALUES('{nombre_producto}', {num_telefono}, '{mail}')"
+
+    try:
+        cursor.execute(query_data2)
+        cursor.close()
+        return True
+    except errors.UniqueViolation:
+        return False
+
+   
+
+    
+def buscar_proveedor(nombre_prov):
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT EXISTS (SELECT 1 FROM proveedores WHERE nombre_proveedor = '{nombre_prov}') AS existe" # ve si existe y devuelve true o false, ver el fetchone
+    cursor.execute(query_data2)
+    data = cursor.fetchone()[0]
+
+    if data:
+        cursor= connection2.cursor()
+        query_data2 = f"DELETE FROM proveedores WHERE nombre_proveedor = '{nombre_prov}'"
+        cursor.close()
+        return True
+        
+    else: 
+        cursor.close()
+        return False
