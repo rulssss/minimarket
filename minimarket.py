@@ -102,19 +102,13 @@ class Datos:
         input_nombre.grid(row=2, column=0, padx=(30,10), pady=5)
 
 
-        # Función de validación
-        def solo_numeros(char):
-            return char.isdigit()  # Verifica si el carácter ingresado es un número
-
-        # Registro de la validación
-        validacion = self.master.register(solo_numeros)
 
         Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
-        input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(validacion,    "%S"))
+        input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(    "%S"))
         input_precio.grid(row=2, column=1, padx=10, pady=5)
 
         Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
-        input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(validacion,  "%S"))
+        input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key")
         input_cantidad.grid(row=2, column=2, padx=10, pady=5)
 
         # Combobox para categorias
@@ -151,9 +145,16 @@ class Datos:
             proveedor_producto = combobox_busqueda2.get()
 
             # Verifica si los valores de precio y cantidad son válidos (números enteros o decimales)
-            if not nombre_producto or not precio_producto or cantidad_producto and not bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto)):
-                advertencia_label.config(text="No acepta vacios ni ',.-/()'")
+            if not bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto)):
+                advertencia_label.config(text="No acepta ',.-/()'")
                 return
+            if not bool(re.match("^[0-9.]*$",precio_producto)):
+                advertencia_label.config(text="Solo acepta números y decimales")
+                return
+            if not cantidad_producto or not nombre_producto or not precio_producto or not categoria_producto or not proveedor_producto:
+                advertencia_label.config(text="No acepta vacios")
+                return
+            
 
             cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto)
             on_no()
@@ -453,8 +454,6 @@ class Datos:
 
     
 
-       
-
 class BuscarDatos:
     def __init__(self, master):
         self.master = master
@@ -526,6 +525,7 @@ class Minimarket:
         ######### Crear el Notebook vertical a la izquierda #########
         self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
         self.notebook.place(x=0, y=0, width=310, height=screen_height)
+
 
         # Mostrar pestañas según el tipo de cuenta
         if account_type:  # Si es True, mostrar todas las pestañas
