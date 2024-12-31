@@ -593,7 +593,6 @@ class Datos:
             if bool(re.match("^[A-Za-z0-9 ]*$", nombre_prov)):  # Verificar si contiene letras y números
                 v = buscar_proveedor(nombre_prov) # creada, y sida true lo borra al instante, si hace falta en otra instancia crear otra funcion solo para borrar
                 if v:
-                    
                     messagebox.showinfo("Borrar Proveedor", "Proveedor borrado con éxito.")
                     ventana.destroy()  # Cerrar la ventana
                 else:

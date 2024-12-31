@@ -219,10 +219,8 @@ def buscar_producto(nombre_prod):
     data = cursor.fetchone()[0]
     
     if data:
-        cursor= connection2.cursor()
-        query_data2 = f"DELETE FROM productos WHERE nombre = '{nombre_prod}'"
-        cursor.execute(query_data2)
-
+        query_data3 = f"DELETE FROM productos WHERE nombre = '{nombre_prod}'"
+        cursor.execute(query_data3)
         cursor.close()
         return True
         
@@ -264,7 +262,7 @@ def cargar_proveedor(nombre_producto, num_telefono, mail):
 
    
 
-    
+
 def buscar_proveedor(nombre_prov):
     cursor= connection2.cursor()
     query_data2 = f"SELECT EXISTS (SELECT 1 FROM proveedores WHERE nombre_proveedor = '{nombre_prov}') AS existe" # ve si existe y devuelve true o false, ver el fetchone
@@ -272,7 +270,6 @@ def buscar_proveedor(nombre_prov):
     data = cursor.fetchone()[0]
 
     if data:
-        cursor= connection2.cursor()
         query_data2 = f"DELETE FROM proveedores WHERE nombre_proveedor = '{nombre_prov}'"
         cursor.close()
         return True
