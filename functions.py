@@ -260,7 +260,6 @@ def cargar_proveedor(nombre_producto, num_telefono, mail):
     except errors.UniqueViolation:
         return False
 
-   
 
 
 def buscar_proveedor(nombre_prov):
@@ -270,7 +269,8 @@ def buscar_proveedor(nombre_prov):
     data = cursor.fetchone()[0]
 
     if data:
-        query_data2 = f"DELETE FROM proveedores WHERE nombre_proveedor = '{nombre_prov}'"
+        query_data3 = f"DELETE FROM proveedores WHERE nombre_proveedor = '{nombre_prov}'"
+        cursor.execute(query_data3)
         cursor.close()
         return True
         
